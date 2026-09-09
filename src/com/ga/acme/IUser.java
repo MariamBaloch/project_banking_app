@@ -25,7 +25,11 @@ public interface IUser {
 
      void setLoginAttempts(int loginAttempts);
 
-     LocalTime getLockedTime();
+     LocalTime getLockedUntil();
 
-     void setLockedTime(LocalTime lockedUntil);
+     void setLockedUntil(LocalTime lockedUntil);
+
+     void setIsLoggedIn(boolean isLoggedIn);
+
+     boolean getIsLoggedIn();
 }

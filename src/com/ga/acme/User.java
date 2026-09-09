@@ -9,7 +9,8 @@ abstract class User implements IUser {
     private Roles role;
 
     private int loginAttempts = 0;
-    private LocalTime lockedTime;
+    private LocalTime lockedUntil;
+    private boolean isLoggedIn = false;
 
     public User() {}
 
@@ -60,17 +61,24 @@ abstract class User implements IUser {
         this.loginAttempts = loginAttempts;
     }
 
-    public LocalTime getLockedTime() {
-        return lockedTime;
+    public LocalTime getLockedUntil() {
+        return lockedUntil;
     }
 
-    public void setLockedTime(LocalTime lockedUntil) {
-        this.lockedTime = lockedUntil;
+    public void setLockedUntil(LocalTime lockedUntil) {
+        this.lockedUntil = lockedUntil;
     }
 
+    public boolean getIsLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setIsLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
+    }
 
     @Override
     public String toString() {
-        return id + "," + name + "," + hashedPassword + "," + role + "," + loginAttempts + "," + lockedTime;
+        return id + "," + name + "," + hashedPassword + "," + role + "," + loginAttempts + "," + lockedUntil + "," + isLoggedIn;
     }
 }

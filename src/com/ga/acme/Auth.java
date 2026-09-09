@@ -1,15 +1,19 @@
 package com.ga.acme;
 
+import com.ga.acme.enums.FilePath;
 import com.ga.acme.enums.Roles;
 import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountLockedException;
 import com.ga.acme.exceptions.RecordNotFoundException;
 import com.ga.acme.util.FileHandler;
-import com.ga.acme.enums.FilePath;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HexFormat;
+import java.util.List;
+
 import static com.ga.acme.util.FileHandler.getDataFromFile;
 
 public class Auth {
@@ -29,29 +33,32 @@ public class Auth {
 
 
     public static IUser getUserById(String id) throws RecordNotFoundException {
-            IUser user = null;
-            HashMap<String, List<String>> users =  getDataFromFile(FilePath.USERS.getPath());
-            if (users.containsKey(id)) {
-                List<String> values = users.get(id);
-                if (values.get(2).equalsIgnoreCase("customer")) {
-                    user = new Customer();
-                } else if (values.get(2).equalsIgnoreCase("banker")) {
-                    user = new Banker();
-                }
-                user.setId(id);
-                user.setName(values.get(0));
-                user.setHashedPassword(values.get(1));
-                user.setRole(Roles.valueOf(values.get(2)));
-                user.setLoginAttempts(Integer.parseInt(values.get(3)));
-                user.setLockedTime(!values.get(4).equals("null") ? LocalTime.parse(values.get(4)) : null);
-            } else {
-                throw new RecordNotFoundException("User with this id does not exist");
+        IUser user = null;
+        HashMap<String, List<String>> users = getDataFromFile(FilePath.USERS.getPath());
+        if (users.containsKey(id)) {
+            List<String> values = users.get(id);
+            if (values.get(2).equalsIgnoreCase("customer")) {
+                user = new Customer();
+            } else if (values.get(2).equalsIgnoreCase("banker")) {
+                user = new Banker();
             }
+            user.setId(id);
+            user.setName(values.get(0));
+            user.setHashedPassword(values.get(1));
+            user.setRole(Roles.valueOf(values.get(2)));
+            user.setLoginAttempts(Integer.parseInt(values.get(3)));
+            user.setLockedUntil(!values.get(4).equals("null") ? LocalTime.parse(values.get(4)) : null);
+            user.setIsLoggedIn(values.get(5).equals("true"));
+        } else {
+            throw new RecordNotFoundException("User with this id does not exist");
+        }
         return user;
     }
 
-    public static boolean checkPassword(String userInputPassword, String storedPassword){
-        if(userInputPassword == null || storedPassword == null) {return false;}
+    public static boolean checkPassword(String userInputPassword, String storedPassword) {
+        if (userInputPassword == null || storedPassword == null) {
+            return false;
+        }
         byte[] storedHashBytes = HexFormat.of().parseHex(storedPassword);
         MessageDigest md = null;
         try {
@@ -67,10 +74,10 @@ public class Auth {
     public static IUser signup(String id, String name, String password, String role) throws AccountAlreadyExistsException {
         IUser user = null;
         try {
-           user =  getUserById(id);
-           if (user.getId() != null) {
-               throw new AccountAlreadyExistsException("Account already exists, try a different id");
-           }
+            user = getUserById(id);
+            if (user.getId() != null) {
+                throw new AccountAlreadyExistsException("Account already exists, try a different id");
+            }
         } catch (RecordNotFoundException e) {
             String transformedRole = role.toLowerCase();
             user = switch (transformedRole) {
@@ -91,24 +98,42 @@ public class Auth {
         IUser user = null;
         try {
             user = getUserById(id);
-            if(checkPassword(password, user.getHashedPassword())) {
-                return user;
-            } else {
-                if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT && user.getLockedTime() != null && LocalTime.now().isBefore(user.getLockedTime().plusMinutes(1))) {
-                    throw new AccountLockedException("Max login attempt reached, please try again after one minute.");
-                } else if(user.getLoginAttempts() == MAX_LOGIN_ATTEMPT && user.getLockedTime() != null && LocalTime.now().isAfter(user.getLockedTime().plusMinutes(1))) {
+            if (!user.getIsLoggedIn()) {
+                if (checkPassword(password, user.getHashedPassword()) && LocalTime.now().isAfter(user.getLockedUntil())) {
+                    user.setIsLoggedIn(true);
                     user.setLoginAttempts(0);
-                    user.setLockedTime(null);
-                } else if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT ) {
-                    user.setLockedTime(LocalTime.now());
-                }  else {
-                    user.setLoginAttempts(getUserById(id).getLoginAttempts() + 1);
+                    user.setLockedUntil(null);
+                } else {
+                    if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT && user.getLockedUntil() != null && LocalTime.now().isBefore(user.getLockedUntil())) {
+                        throw new AccountLockedException("Max login attempt reached, please try again after one minute.");
+                    } else if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT && user.getLockedUntil() != null && LocalTime.now().isAfter(user.getLockedUntil())) {
+                        user.setLoginAttempts(0);
+                        user.setLockedUntil(null);
+                    } else if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT) {
+                        user.setLockedUntil(LocalTime.now().plusMinutes(1));
+                    } else {
+                        user.setLoginAttempts(getUserById(id).getLoginAttempts() + 1);
+                    }
                 }
                 FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
+                return user;
+            } else {
+                //TODO change to exceptiom?
+                System.out.println("User is already logged in");
             }
         } catch (AccountLockedException | RecordNotFoundException e) {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public static void logout(String id) {
+        try {
+            IUser user = getUserById(id);
+            user.setIsLoggedIn(false);
+            FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
+        } catch (RecordNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

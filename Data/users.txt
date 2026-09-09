@@ -1,2 +1,2 @@
-4,yaya,e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec,CUSTOMER,0,null
-5,yaya,e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec,CUSTOMER,0,null
+4,yaya,e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec,CUSTOMER,0,null,false
+5,yaya,e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec,CUSTOMER,0,null,false
