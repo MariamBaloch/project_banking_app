@@ -2,19 +2,30 @@ package com.ga.acme;
 
 import com.ga.acme.enums.Roles;
 
+import java.time.LocalTime;
+
 public interface IUser {
-    public String getId();
-    public void setId(String id);
+     String getId();
 
-    public Roles getRole();
+     void setId(String id);
 
-    public void setRole(Roles role);
+     Roles getRole();
 
-    public String getHashedPassword();
-    public void setHashedPassword(String hashedPassword) ;
+     void setRole(Roles role);
 
-    public String getName();
+     String getHashedPassword();
 
-    public void setName(String name);
+     void setHashedPassword(String hashedPassword) ;
 
+     String getName();
+
+     void setName(String name);
+
+     int getLoginAttempts();
+
+     void setLoginAttempts(int loginAttempts);
+
+     LocalTime getLockedTime();
+
+     void setLockedTime(LocalTime lockedUntil);
 }

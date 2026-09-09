@@ -1,13 +1,15 @@
 package com.ga.acme;
-
 import com.ga.acme.enums.Roles;
-import java.util.Date;
+import java.time.LocalTime;
 
 abstract class User implements IUser {
     private String id;
     private String name;
     private String hashedPassword;
     private Roles role;
+
+    private int loginAttempts = 0;
+    private LocalTime lockedTime;
 
     public User() {}
 
@@ -39,7 +41,7 @@ abstract class User implements IUser {
     }
 
     public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = Auth.encryptPassword(hashedPassword);
+        this.hashedPassword = hashedPassword;
     }
 
     public String getName() {
@@ -50,8 +52,25 @@ abstract class User implements IUser {
         this.name = name;
     }
 
+    public int getLoginAttempts() {
+        return loginAttempts;
+    }
+
+    public void setLoginAttempts(int loginAttempts) {
+        this.loginAttempts = loginAttempts;
+    }
+
+    public LocalTime getLockedTime() {
+        return lockedTime;
+    }
+
+    public void setLockedTime(LocalTime lockedUntil) {
+        this.lockedTime = lockedUntil;
+    }
+
+
     @Override
     public String toString() {
-        return id + "," + name + "," + hashedPassword + "," + role;
+        return id + "," + name + "," + hashedPassword + "," + role + "," + loginAttempts + "," + lockedTime;
     }
 }
