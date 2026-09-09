@@ -1,4 +1,4 @@
-package com.ga.acme.util;
+package com.ga.acme.enums;
 
 public enum FilePath {
     USERS("Data/users.txt");

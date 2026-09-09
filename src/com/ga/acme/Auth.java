@@ -5,7 +5,7 @@ import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountLockedException;
 import com.ga.acme.exceptions.RecordNotFoundException;
 import com.ga.acme.util.FileHandler;
-import com.ga.acme.util.FilePath;
+import com.ga.acme.enums.FilePath;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
