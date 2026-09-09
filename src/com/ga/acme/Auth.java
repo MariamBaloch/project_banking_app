@@ -5,6 +5,7 @@ import com.ga.acme.enums.Roles;
 import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountLockedException;
 import com.ga.acme.exceptions.RecordNotFoundException;
+import com.ga.acme.exceptions.UserAlreadyLoggedIn;
 import com.ga.acme.util.FileHandler;
 
 import java.security.MessageDigest;
@@ -118,10 +119,9 @@ public class Auth {
                 FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
                 return user;
             } else {
-                //TODO change to exceptiom?
-                System.out.println("User is already logged in");
+                throw new UserAlreadyLoggedIn("The user is already logged in");
             }
-        } catch (AccountLockedException | RecordNotFoundException e) {
+        } catch (AccountLockedException | RecordNotFoundException | UserAlreadyLoggedIn e) {
             System.out.println(e.getMessage());
         }
         return null;
