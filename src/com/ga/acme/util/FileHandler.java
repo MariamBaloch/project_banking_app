@@ -1,11 +1,10 @@
 package com.ga.acme.util;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class FileHandler {
+
 
     public static HashMap<String, List<String>> getDataFromFile(String fileName) {
         HashMap<String, List<String>> result = new HashMap<>();
@@ -23,10 +22,27 @@ public class FileHandler {
     }
 
     public static void writeToFile(String fileName, Object object) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(object.toString());
         } catch (IOException e) {
             System.out.println("Error writing to file");
         }
+    }
+     public static void updateLineInFile(String fileName, String id, String newContent) {
+         HashMap<String, List<String>> result = getDataFromFile(fileName);
+         if (result.containsKey(id)) {
+             String [] splitValues = newContent.split(",");
+             result.replace(id, Arrays.stream(splitValues).toList().subList(1, splitValues.length));
+
+             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                 for (Map.Entry<String, List<String>>entry : result.entrySet()) {
+                     writer.write(entry.getKey() + "," + String.join(",", entry.getValue()));
+                     writer.newLine();
+                 }
+             } catch (IOException e) {
+                 System.out.println("Error updating file");
+             }
+         }
+
     }
 }
