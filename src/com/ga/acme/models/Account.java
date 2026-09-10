@@ -9,6 +9,9 @@ abstract class Account implements IAccount {
     private boolean mastercard;
     private boolean mastercardPlatinum;
     private boolean mastercardTitanium;
+    private int overdrafts = 0;
+    private double overdraftAmount;
+    private boolean isLocked;
 
     public Account() {
     }
@@ -80,6 +83,30 @@ abstract class Account implements IAccount {
 
     public void setMastercardPlatinum(boolean mastercardPlatinum) {
         this.mastercardPlatinum = mastercardPlatinum;
+    }
+
+    public int getOverdrafts() {
+        return overdrafts;
+    }
+
+    public void setOverdrafts(int overdrafts) {
+        this.overdrafts = overdrafts;
+    }
+
+    public double getOverdraftAmount() {
+        return overdraftAmount;
+    }
+
+    public void setOverdraftAmount(double overdraftAmount) {
+        this.overdraftAmount = overdraftAmount;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.ga.acme.enums.Roles;
 import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountLockedException;
 import com.ga.acme.exceptions.RecordNotFoundException;
-import com.ga.acme.exceptions.UserAlreadyLoggedIn;
+import com.ga.acme.exceptions.UserAlreadyLoggedInException;
 import com.ga.acme.interfaces.IUser;
 import com.ga.acme.models.Banker;
 import com.ga.acme.models.CheckingAccount;
@@ -57,7 +57,6 @@ public class Auth {
                 user.setLockedUntil(!values.get(4).equals("null") ? LocalTime.parse(values.get(4)) : null);
                 user.setIsLoggedIn(values.get(5).equals("true"));
                 if (!values.get(6).equals("null")) {
-                    AccountTransactions.getAccountById(values.get(6));
                     user.setCheckingAccount((CheckingAccount) AccountTransactions.getAccountById(values.get(6)));
                 }
                 if (!values.get(7).equals("null")) {
@@ -136,9 +135,9 @@ public class Auth {
                 FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
                 return user;
             } else {
-                throw new UserAlreadyLoggedIn();
+                throw new UserAlreadyLoggedInException();
             }
-        } catch (AccountLockedException | UserAlreadyLoggedIn e) {
+        } catch (AccountLockedException | UserAlreadyLoggedInException e) {
             System.out.println(e.getMessage());
         }
         return null;

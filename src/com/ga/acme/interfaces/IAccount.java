@@ -32,4 +32,17 @@ public interface IAccount {
 
     void setMastercardPlatinum(boolean mastercardPlatinum);
 
+    int getOverdrafts();
+
+    void setOverdrafts(int overdrafts);
+
+    double getOverdraftAmount();
+
+    void setOverdraftAmount(double overdraftAmount);
+
+    boolean isLocked();
+
+    void setLocked(boolean locked);
+
+
 }
