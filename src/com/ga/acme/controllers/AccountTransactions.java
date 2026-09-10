@@ -19,15 +19,14 @@ import static com.ga.acme.util.FileHandler.getDataFromFile;
 
 public class AccountTransactions {
 
-    public static void addAccount(IUser user, String type) {
+    public static void addAccount(IUser user, String type, Boolean mastercard, Boolean mastercardPlatinum, Boolean mastercardTitanium) {
         IAccount acc = null;
         String uniqueId = UUID.randomUUID().toString().substring(0, 8);
-
         try {
             switch (type.toLowerCase()) {
                 case "checkingaccount":
                     if (user.getCheckingAccount() == null) {
-                        acc = new CheckingAccount(uniqueId, user.getId());
+                        acc = new CheckingAccount(uniqueId, user.getId(), mastercard, mastercardPlatinum, mastercardTitanium);
                         user.setCheckingAccount((CheckingAccount) acc);
                     } else {
                         throw new AccountAlreadyExistsException("Checking account for this user already exists");
@@ -35,7 +34,7 @@ public class AccountTransactions {
                     break;
                 case "savingsaccount":
                     if (user.getSavingsAccount() == null) {
-                        acc = new SavingsAccount(uniqueId, user.getId());
+                        acc = new SavingsAccount(uniqueId, user.getId(), mastercard, mastercardPlatinum, mastercardTitanium);
                         user.setSavingsAccount((SavingsAccount) acc);
                     } else {
                         throw new AccountAlreadyExistsException("Savings account for this user already exists");
@@ -66,6 +65,9 @@ public class AccountTransactions {
                 acc.setId(id);
                 acc.setBalance(Double.parseDouble(values.get(0)));
                 acc.setUserId(values.get(1));
+                acc.setMastercard(Boolean.parseBoolean(values.get(2)));
+                acc.setMastercardPlatinum(Boolean.parseBoolean(values.get(3)));
+                acc.setMastercardTitanium(Boolean.parseBoolean(values.get(4)));
             } else {
                 throw new RecordNotFoundException("Account with id " + id + " not found");
             }
@@ -74,5 +76,6 @@ public class AccountTransactions {
         }
         return acc;
     }
+
 
 }

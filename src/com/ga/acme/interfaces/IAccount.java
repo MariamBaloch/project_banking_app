@@ -1,7 +1,5 @@
 package com.ga.acme.interfaces;
 
-import com.ga.acme.enums.AccountType;
-
 public interface IAccount {
 
     String getId();
@@ -21,5 +19,17 @@ public interface IAccount {
     String getUserId();
 
     void setUserId(String userId);
+
+    boolean isMastercard();
+
+    void setMastercard(boolean mastercard);
+
+    boolean isMastercardTitanium();
+
+    void setMastercardTitanium(boolean mastercardTitanium);
+
+    boolean isMastercardPlatinum();
+
+    void setMastercardPlatinum(boolean mastercardPlatinum);
 
 }

@@ -6,13 +6,19 @@ abstract class Account implements IAccount {
     private String id;
     private double balance;
     private String userId;
+    private boolean mastercard;
+    private boolean mastercardPlatinum;
+    private boolean mastercardTitanium;
 
     public Account() {
     }
 
-    public Account(String id, String userId) {
+    public Account(String id, String userId, boolean mastercard, boolean mastercardPlatinum, boolean mastercardTitanium) {
         this.id = id;
         this.userId = userId;
+        this.mastercard = mastercard;
+        this.mastercardPlatinum = mastercardPlatinum;
+        this.mastercardTitanium = mastercardTitanium;
     }
 
     public double getBalance() {
@@ -52,8 +58,32 @@ abstract class Account implements IAccount {
         this.userId = userId;
     }
 
+    public boolean isMastercard() {
+        return mastercard;
+    }
+
+    public void setMastercard(boolean mastercard) {
+        this.mastercard = mastercard;
+    }
+
+    public boolean isMastercardTitanium() {
+        return mastercardTitanium;
+    }
+
+    public void setMastercardTitanium(boolean mastercardTitanium) {
+        this.mastercardTitanium = mastercardTitanium;
+    }
+
+    public boolean isMastercardPlatinum() {
+        return mastercardPlatinum;
+    }
+
+    public void setMastercardPlatinum(boolean mastercardPlatinum) {
+        this.mastercardPlatinum = mastercardPlatinum;
+    }
+
     @Override
     public String toString() {
-        return id + "," + balance + "," + userId + "," + getClass().getSimpleName();
+        return id + "," + balance + "," + userId + "," + getClass().getSimpleName() + "," + mastercard + "," + mastercardPlatinum + "," + mastercardTitanium;
     }
 }
