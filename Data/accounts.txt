@@ -1,3 +1,2 @@
-
-8e2b2746,0.0,5,CheckingAccount
-292d32bd,0.0,5,SavingsAccount
+30e67dbe,0.0,5,SavingsAccount,false,false,false
+524954d9,0.0,5,CheckingAccount,true,false,true
