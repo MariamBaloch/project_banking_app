@@ -8,7 +8,9 @@ import com.ga.acme.exceptions.RecordNotFoundException;
 import com.ga.acme.exceptions.UserAlreadyLoggedIn;
 import com.ga.acme.interfaces.IUser;
 import com.ga.acme.models.Banker;
+import com.ga.acme.models.CheckingAccount;
 import com.ga.acme.models.Customer;
+import com.ga.acme.models.SavingsAccount;
 import com.ga.acme.util.FileHandler;
 
 import java.security.MessageDigest;
@@ -54,8 +56,13 @@ public class Auth {
                 user.setLoginAttempts(Integer.parseInt(values.get(3)));
                 user.setLockedUntil(!values.get(4).equals("null") ? LocalTime.parse(values.get(4)) : null);
                 user.setIsLoggedIn(values.get(5).equals("true"));
-//                user.getCheckingAccount().setId(values.get(6));
-//                user.setSavingsAccount()
+                if (!values.get(6).equals("null")) {
+                    AccountTransactions.getAccountById(values.get(6));
+                    user.setCheckingAccount((CheckingAccount) AccountTransactions.getAccountById(values.get(6)));
+                }
+                if (!values.get(7).equals("null")) {
+                    user.setSavingsAccount((SavingsAccount) AccountTransactions.getAccountById(values.get(7)));
+                }
             } else {
                 throw new RecordNotFoundException("User with this id " + id + " does not exist");
             }
