@@ -1,7 +1,8 @@
 package com.ga.acme.enums;
 
 public enum FilePath {
-    USERS("Data/users.txt");
+    USERS("Data/users.txt"),
+    ACCOUNTS("Data/accounts.txt");
 
     private final String path;
 
