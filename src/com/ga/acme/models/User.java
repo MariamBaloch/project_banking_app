@@ -1,18 +1,25 @@
-package com.ga.acme;
+package com.ga.acme.models;
+
+import com.ga.acme.controllers.Auth;
 import com.ga.acme.enums.Roles;
+import com.ga.acme.interfaces.IUser;
+
 import java.time.LocalTime;
 
 abstract class User implements IUser {
+    SavingsAccount savingsAccount;
+    CheckingAccount checkingAccount;
     private String id;
     private String name;
     private String hashedPassword;
     private Roles role;
-
     private int loginAttempts = 0;
     private LocalTime lockedUntil;
     private boolean isLoggedIn = false;
+    private boolean isActive;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String id, String name, String password, Roles role) {
         this.id = id;
@@ -77,8 +84,35 @@ abstract class User implements IUser {
         isLoggedIn = loggedIn;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public SavingsAccount getSavingsAccount() {
+        return savingsAccount;
+    }
+
+    public void setSavingsAccount(SavingsAccount savingsAccount) {
+        this.savingsAccount = savingsAccount;
+    }
+
+    public CheckingAccount getCheckingAccount() {
+        return checkingAccount;
+    }
+
+    public void setCheckingAccount(CheckingAccount checkingAccount) {
+        this.checkingAccount = checkingAccount;
+    }
+
     @Override
     public String toString() {
-        return id + "," + name + "," + hashedPassword + "," + role + "," + loginAttempts + "," + lockedUntil + "," + isLoggedIn;
+        String savingId = savingsAccount != null ? savingsAccount.getId() : null;
+        String checkingId = checkingAccount != null ? checkingAccount.getId() : null;
+
+        return id + "," + name + "," + hashedPassword + "," + role + "," + loginAttempts + "," + lockedUntil + "," + isLoggedIn + "," + savingId + "," + checkingId + "," + isActive;
     }
 }
