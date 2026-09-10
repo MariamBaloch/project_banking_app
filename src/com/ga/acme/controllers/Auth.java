@@ -112,35 +112,42 @@ public class Auth {
     }
 
     public static IUser login(String id, String password) {
-        IUser user = null;
         try {
-            user = getUserById(id);
-            if (!user.getIsLoggedIn()) {
-                if (checkPassword(password, user.getHashedPassword()) && LocalTime.now().isAfter(user.getLockedUntil())) {
-                    user.setIsLoggedIn(true);
-                    user.setLoginAttempts(0);
-                    user.setLockedUntil(null);
-                } else {
-                    if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT && user.getLockedUntil() != null && LocalTime.now().isBefore(user.getLockedUntil())) {
-                        throw new AccountLockedException("Max login attempt reached, please try again after one minute.");
-                    } else if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT && user.getLockedUntil() != null && LocalTime.now().isAfter(user.getLockedUntil())) {
-                        user.setLoginAttempts(0);
-                        user.setLockedUntil(null);
-                    } else if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT) {
-                        user.setLockedUntil(LocalTime.now().plusMinutes(1));
-                    } else {
-                        user.setLoginAttempts(getUserById(id).getLoginAttempts() + 1);
-                    }
-                }
-                FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
-                return user;
-            } else {
+            IUser user = getUserById(id);
+
+            if (user.getIsLoggedIn()) {
                 throw new UserAlreadyLoggedInException();
             }
+
+            LocalTime now = LocalTime.now();
+            boolean isLocked = user.getLockedUntil() != null && now.isBefore(user.getLockedUntil());
+            boolean isPasswordCorrect = checkPassword(password, user.getHashedPassword());
+
+            if (isPasswordCorrect && !isLocked) {
+                user.setIsLoggedIn(true);
+                user.setLoginAttempts(0);
+                user.setLockedUntil(null);
+            } else {
+                if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT) {
+                    if (user.getLockedUntil() == null) {
+                        user.setLockedUntil(now.plusMinutes(1));
+                    } else if (now.isBefore(user.getLockedUntil())) {
+                        throw new AccountLockedException("Max login attempt reached, please try again after one minute.");
+                    } else {
+                        user.setLoginAttempts(0);
+                        user.setLockedUntil(null);
+                    }
+                } else {
+                    user.setLoginAttempts(user.getLoginAttempts() + 1);
+                }
+            }
+
+            FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
+            return user;
         } catch (AccountLockedException | UserAlreadyLoggedInException e) {
             System.out.println(e.getMessage());
+            return null;
         }
-        return null;
     }
 
     public static void logout(String id) {
