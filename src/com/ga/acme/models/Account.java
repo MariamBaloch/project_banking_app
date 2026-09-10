@@ -12,6 +12,10 @@ abstract class Account implements IAccount {
     private int overdrafts = 0;
     private double overdraftAmount;
     private boolean isLocked;
+    private double dailyWithdrawn;
+    private double dailyDeposited;
+    private double dailyTransferred;
+    private String lastTransactionDate = "";
 
     public Account() {
     }
@@ -109,8 +113,43 @@ abstract class Account implements IAccount {
         isLocked = locked;
     }
 
+    public double getDailyWithdrawn() {
+        return dailyWithdrawn;
+    }
+
+    public void setDailyWithdrawn(double dailyWithdrawn) {
+        this.dailyWithdrawn = dailyWithdrawn;
+    }
+
+    public double getDailyDeposited() {
+        return dailyDeposited;
+    }
+
+    public void setDailyDeposited(double dailyDeposited) {
+        this.dailyDeposited = dailyDeposited;
+    }
+
+    public double getDailyTransferred() {
+        return dailyTransferred;
+    }
+
+    public void setDailyTransferred(double dailyTransferred) {
+        this.dailyTransferred = dailyTransferred;
+    }
+
+    public String getLastTransactionDate() {
+        return lastTransactionDate;
+    }
+
+    public void setLastTransactionDate(String lastTransactionDate) {
+        this.lastTransactionDate = lastTransactionDate;
+    }
+
     @Override
     public String toString() {
-        return id + "," + balance + "," + userId + "," + getClass().getSimpleName() + "," + mastercard + "," + mastercardPlatinum + "," + mastercardTitanium + "," + overdrafts + "," + overdraftAmount + "," + isLocked;
+        return id + "," + balance + "," + userId + "," + getClass().getSimpleName() + ","
+                + mastercard + "," + mastercardPlatinum + "," + mastercardTitanium + ","
+                + overdrafts + "," + overdraftAmount + "," + isLocked + ","
+                + dailyWithdrawn + "," + dailyDeposited + "," + dailyTransferred + "," + lastTransactionDate;
     }
 }

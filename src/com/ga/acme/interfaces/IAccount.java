@@ -44,5 +44,20 @@ public interface IAccount {
 
     void setLocked(boolean locked);
 
+    double getDailyWithdrawn();
+
+    void setDailyWithdrawn(double dailyWithdrawn);
+
+    double getDailyDeposited();
+
+    void setDailyDeposited(double dailyDeposited);
+
+    double getDailyTransferred();
+
+    void setDailyTransferred(double dailyTransferred);
+
+    String getLastTransactionDate();
+
+    void setLastTransactionDate(String lastTransactionDate);
 
 }
