@@ -26,6 +26,7 @@ public class FileHandler {
     public static void writeToFile(String fileName, Object object) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(object.toString());
+            writer.newLine();
         } catch (IOException e) {
             System.out.println("Error writing to file");
         }
