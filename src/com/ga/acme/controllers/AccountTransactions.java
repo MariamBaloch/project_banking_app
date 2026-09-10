@@ -113,11 +113,16 @@ public class AccountTransactions {
         }
     }
 
-
-    public static double withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
+    private static IAccount getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
         IUser user = Auth.getUserById(userId);
         initialChecks(user, accountType, cardType);
-        IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
+        return accountType == AccountType.CHECKINGACCOUNT
+                ? user.getCheckingAccount()
+                : user.getSavingsAccount();
+    }
+
+    public static double withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
+        IAccount account = getVerifiedAccount(userId, accountType, cardType);
         try {
             if (account.isLocked()) {
                 throw new AccountLockedException(
@@ -149,13 +154,8 @@ public class AccountTransactions {
     }
 
 
-    public static double resolveOverdraft(String userId, double paymentAmount,
-                                          AccountType accountType, CardType cardType) {
-        IUser user = Auth.getUserById(userId);
-        initialChecks(user, accountType, cardType);
-        IAccount account = accountType == AccountType.CHECKINGACCOUNT
-                ? user.getCheckingAccount()
-                : user.getSavingsAccount();
+    public static double resolveOverdraft(String userId, double paymentAmount, AccountType accountType, CardType cardType) {
+        IAccount account = getVerifiedAccount(userId, accountType, cardType);
         try {
             double negativeBalance = account.getBalance() < 0 ? Math.abs(account.getBalance()) : 0;
             double totalDebt = negativeBalance + account.getOverdraftAmount();
@@ -187,9 +187,7 @@ public class AccountTransactions {
     }
 
     public static double deposit(String userId, double amount, AccountType accountType, CardType cardType) {
-        IUser user = Auth.getUserById(userId);
-        initialChecks(user, accountType, cardType);
-        IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
+        IAccount account = getVerifiedAccount(userId, accountType, cardType);
         account.deposit(amount);
         FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
         return account.getBalance();
