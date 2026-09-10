@@ -142,7 +142,7 @@ public class AccountTransactions {
 
                 if (account.getOverdrafts() >= OVERDRAFT_LIMIT) {
                     account.setLocked(true);
-                    System.out.println("Account has been locked due to reaching overdraft limit. " + "Resolve your negative balance and pay $" + account.getOverdraftAmount() + " in to unlock account.");
+                    System.out.println("Account has been locked due to reaching overdraft limit. " + "Resolve your negative balance and pay $" + account.getOverdraftAmount() + " to unlock account.");
                 }
             }
 
