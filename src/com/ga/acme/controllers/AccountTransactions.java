@@ -182,6 +182,20 @@ public class AccountTransactions {
         return account.getBalance();
     }
 
+    public static double transfer(String userId, double amount, AccountType fromAccountType, AccountType toAccountType, String toUserId, CardType cardType, boolean ownTransfer) {
+        IAccount fromAccount = getVerifiedAccount(userId, fromAccountType, cardType);
+        IAccount toAccount = getAccountById(toUserId);
+        ICard card = getCardForType(cardType);
+        try {
+            double limit = ownTransfer ? card.getTransferLimitPerDayOwnAccount() : card.getTransferLimitPerDay();
+            String transactionType = ownTransfer ? "Transfer to own account" : "Transfer";
+            handleDailyLimits(fromAccount, amount, fromAccount.getDailyTransferred(), limit, transactionType);
+
+            fromAccount.transferFunds(amount, toAccount);
+            fromAccount.setDailyTransferred(fromAccount.getDailyTransferred() + amount);
+
+            FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), fromAccount.getId(), fromAccount.toString());
+            FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), toAccount.getId(), toAccount.toString());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
