@@ -73,6 +73,7 @@ public class AccountTransactions {
                 acc.setMastercardTitanium(Boolean.parseBoolean(values.get(5)));
                 acc.setOverdrafts(Integer.parseInt(values.get(6)));
                 acc.setOverdraftAmount(Double.parseDouble(values.get(7)));
+                acc.setLocked(Boolean.parseBoolean(values.get(8)));
             } else {
                 throw new RecordNotFoundException("Account with id " + id + " not found");
             }
@@ -118,26 +119,66 @@ public class AccountTransactions {
         initialChecks(user, accountType, cardType);
         IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
         try {
-            if (account.getOverdraftAmount() == 0 && account.getBalance() >= 0) {
-                account.setLocked(false);
-            }
             if (account.isLocked()) {
-                throw new AccountLockedException("Account locked, resolve overdraft fees and negative balance to unlock account");
-            } else if (!account.isLocked()) {
-                if (account.getOverdrafts() == OVERDRAFT_LIMIT) {
-                    account.setLocked(true);
-                    throw new AccountLockedException("Overdraft limit reached, account has been locked");
-                }
-                if (account.getBalance() <= 0 && amount > 100) {
-                    throw new WithdrawLimitException("Negative balance, unable to withdraw more than 100$. Please enter a lower amount");
-                }
-                if (account.getBalance() <= 0 && amount <= 100) {
-                    account.setOverdraftAmount(account.getOverdraftAmount() + OVERDRAFT_AMOUNT);
-                    account.setOverdrafts(account.getOverdrafts() + 1);
-                }
+                throw new AccountLockedException(
+                        "Account is locked due to reaching overdraft limit. Pay off your negative balance and $" + account.getOverdraftAmount() + " overdraft fee to unlock.");
+            }
+            if (account.getBalance() < 0 && amount > 100) {
+                throw new WithdrawLimitException(
+                        "Negative balance, withdrawals are limited to $100. Please enter a lower amount.");
             }
             account.withdraw(amount);
+
+            if (account.getBalance() < 0) {
+                account.setOverdraftAmount(account.getOverdraftAmount() + OVERDRAFT_AMOUNT);
+                account.setOverdrafts(account.getOverdrafts() + 1);
+
+                System.out.println("Negative balance, overdraft fee of $" + OVERDRAFT_AMOUNT + " charged. " + "Total overdraft fees owed: $" + account.getOverdraftAmount());
+
+                if (account.getOverdrafts() >= OVERDRAFT_LIMIT) {
+                    account.setLocked(true);
+                    System.out.println("Account has been locked due to reaching overdraft limit. " + "Resolve your negative balance and pay $" + account.getOverdraftAmount() + " in to unlock account.");
+                }
+            }
+
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return account.getBalance();
+    }
+
+
+    public static double resolveOverdraft(String userId, double paymentAmount,
+                                          AccountType accountType, CardType cardType) {
+        IUser user = Auth.getUserById(userId);
+        initialChecks(user, accountType, cardType);
+        IAccount account = accountType == AccountType.CHECKINGACCOUNT
+                ? user.getCheckingAccount()
+                : user.getSavingsAccount();
+        try {
+            double negativeBalance = account.getBalance() < 0 ? Math.abs(account.getBalance()) : 0;
+            double totalDebt = negativeBalance + account.getOverdraftAmount();
+
+            if (totalDebt == 0) {
+                System.out.println("No overdraft resolution needed.");
+                return account.getBalance();
+            }
+
+            if (paymentAmount < totalDebt) {
+                throw new InsufficientAmountException(
+                        "Insufficient amount provided. Amount owed $" + totalDebt + " (negative balance: $" + negativeBalance + " + overdraft fees: $" + account.getOverdraftAmount() + ")."
+                );
+            }
+
+            double surplus = paymentAmount - totalDebt;
+            account.setBalance(surplus);
+            account.setOverdraftAmount(0);
+            account.setOverdrafts(0);
+            account.setLocked(false);
+
+            FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
+            System.out.printf("Overdraft resolved. Account unlocked. New balance: " + account.getBalance());
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -152,15 +193,5 @@ public class AccountTransactions {
         account.deposit(amount);
         FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
         return account.getBalance();
-    }
-
-    public static void payOverdraft(String userId, double amount, AccountType accountType, CardType cardType) {
-        IUser user = Auth.getUserById(userId);
-        initialChecks(user, accountType, cardType);
-        IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
-        if (amount > account.getOverdrafts()) {
-            amount = account.getOverdrafts();
-        }
-        account.setOverdraftAmount(account.getOverdraftAmount() - OVERDRAFT_AMOUNT);
     }
 }
