@@ -74,6 +74,11 @@ public class AccountTransactions {
                 acc.setOverdrafts(Integer.parseInt(values.get(6)));
                 acc.setOverdraftAmount(Double.parseDouble(values.get(7)));
                 acc.setLocked(Boolean.parseBoolean(values.get(8)));
+                acc.setDailyWithdrawn(Double.parseDouble(values.get(9)));
+                acc.setDailyDeposited(Double.parseDouble(values.get(10)));
+                acc.setDailyTransferred(Double.parseDouble(values.get(11)));
+                acc.setLastTransactionDate(values.get(12));
+
             } else {
                 throw new RecordNotFoundException("Account with id " + id + " not found");
             }
@@ -123,6 +128,7 @@ public class AccountTransactions {
 
     public static double withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
         IAccount account = getVerifiedAccount(userId, accountType, cardType);
+        ICard card = getCardForType(cardType);
         try {
             if (account.isLocked()) {
                 throw new AccountLockedException(
@@ -178,7 +184,7 @@ public class AccountTransactions {
             account.setLocked(false);
 
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
-            System.out.printf("Overdraft resolved. Account unlocked. New balance: " + account.getBalance());
+            System.out.println("Overdraft resolved. Account unlocked. New balance: " + account.getBalance());
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -186,10 +192,27 @@ public class AccountTransactions {
         return account.getBalance();
     }
 
-    public static double deposit(String userId, double amount, AccountType accountType, CardType cardType) {
-        IAccount account = getVerifiedAccount(userId, accountType, cardType);
-        account.deposit(amount);
-        FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return account.getBalance();
     }
+
+    private static IAccount getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
+        IUser user = Auth.getUserById(userId);
+        initialChecks(user, accountType, cardType);
+        return accountType == AccountType.CHECKINGACCOUNT
+                ? user.getCheckingAccount()
+                : user.getSavingsAccount();
+    }
+
+    private static ICard getCardForType(CardType cardType) {
+        return switch (cardType) {
+            case MASTERCARD -> new Mastercard();
+            case MASTERCARD_PLATINUM -> new MastercardPlatinum();
+            case MASTERCARD_TITANIUM -> new MastercardTitanium();
+        };
+    }
+
+
 }
