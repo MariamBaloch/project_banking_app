@@ -5,11 +5,12 @@ import com.ga.acme.enums.CardType;
 import com.ga.acme.enums.FilePath;
 import com.ga.acme.exceptions.*;
 import com.ga.acme.interfaces.IAccount;
+import com.ga.acme.interfaces.ICard;
 import com.ga.acme.interfaces.IUser;
-import com.ga.acme.models.CheckingAccount;
-import com.ga.acme.models.SavingsAccount;
+import com.ga.acme.models.*;
 import com.ga.acme.util.FileHandler;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -118,18 +119,11 @@ public class AccountTransactions {
         }
     }
 
-    private static IAccount getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
-        IUser user = Auth.getUserById(userId);
-        initialChecks(user, accountType, cardType);
-        return accountType == AccountType.CHECKINGACCOUNT
-                ? user.getCheckingAccount()
-                : user.getSavingsAccount();
-    }
-
     public static double withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
         IAccount account = getVerifiedAccount(userId, accountType, cardType);
         ICard card = getCardForType(cardType);
         try {
+            handleDailyLimits(account, amount, account.getDailyWithdrawn(), card.getWithdrawLimitPerDay(), "Withdraw");
             if (account.isLocked()) {
                 throw new AccountLockedException(
                         "Account is locked due to reaching overdraft limit. Pay off your negative balance and $" + account.getOverdraftAmount() + " overdraft fee to unlock.");
@@ -139,26 +133,23 @@ public class AccountTransactions {
                         "Negative balance, withdrawals are limited to $100. Please enter a lower amount.");
             }
             account.withdraw(amount);
+            account.setDailyWithdrawn(account.getDailyWithdrawn() + amount);
 
             if (account.getBalance() < 0) {
                 account.setOverdraftAmount(account.getOverdraftAmount() + OVERDRAFT_AMOUNT);
                 account.setOverdrafts(account.getOverdrafts() + 1);
-
                 System.out.println("Negative balance, overdraft fee of $" + OVERDRAFT_AMOUNT + " charged. " + "Total overdraft fees owed: $" + account.getOverdraftAmount());
-
                 if (account.getOverdrafts() >= OVERDRAFT_LIMIT) {
                     account.setLocked(true);
                     System.out.println("Account has been locked due to reaching overdraft limit. " + "Resolve your negative balance and pay $" + account.getOverdraftAmount() + " to unlock account.");
                 }
             }
-
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return account.getBalance();
     }
-
 
     public static double resolveOverdraft(String userId, double paymentAmount, AccountType accountType, CardType cardType) {
         IAccount account = getVerifiedAccount(userId, accountType, cardType);
@@ -172,8 +163,7 @@ public class AccountTransactions {
             }
 
             if (paymentAmount < totalDebt) {
-                throw new InsufficientAmountException(
-                        "Insufficient amount provided. Amount owed $" + totalDebt + " (negative balance: $" + negativeBalance + " + overdraft fees: $" + account.getOverdraftAmount() + ")."
+                throw new InsufficientAmountException("Insufficient amount provided. Amount owed $" + totalDebt + " (negative balance: $" + negativeBalance + " + overdraft fees: $" + account.getOverdraftAmount() + ")."
                 );
             }
 
@@ -195,6 +185,21 @@ public class AccountTransactions {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return fromAccount.getBalance();
+    }
+
+    public static double deposit(String userId, double amount, AccountType accountType, CardType cardType) {
+        IAccount account = getVerifiedAccount(userId, accountType, cardType);
+        ICard card = getCardForType(cardType);
+        try {
+            handleDailyLimits(account, amount, account.getDailyDeposited(),
+                    card.getDepositLimitPerDayOwnAccount(), "Deposit");
+            account.deposit(amount);
+            account.setDailyDeposited(account.getDailyDeposited() + amount);
+            FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return account.getBalance();
     }
 
@@ -212,6 +217,20 @@ public class AccountTransactions {
             case MASTERCARD_PLATINUM -> new MastercardPlatinum();
             case MASTERCARD_TITANIUM -> new MastercardTitanium();
         };
+    }
+
+    private static void handleDailyLimits(IAccount account, double amount, double dailyAmount, double limit, String transactionType) throws DailyLimitExceededException {
+        String today = LocalDate.now().toString();
+        if (!today.equals(account.getLastTransactionDate())) {
+            account.setDailyWithdrawn(0);
+            account.setDailyDeposited(0);
+            account.setDailyTransferred(0);
+            account.setLastTransactionDate(today);
+            dailyAmount = 0;
+        }
+        if (dailyAmount + amount > limit) {
+            throw new DailyLimitExceededException(transactionType + " daily limit of $" + limit + " exceeded. Used: $" + dailyAmount + ", Requested: $" + amount + ".");
+        }
     }
 
 
