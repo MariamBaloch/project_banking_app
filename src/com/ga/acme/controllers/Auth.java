@@ -2,10 +2,7 @@ package com.ga.acme.controllers;
 
 import com.ga.acme.enums.FilePath;
 import com.ga.acme.enums.Roles;
-import com.ga.acme.exceptions.AccountAlreadyExistsException;
-import com.ga.acme.exceptions.AccountLockedException;
-import com.ga.acme.exceptions.RecordNotFoundException;
-import com.ga.acme.exceptions.UserAlreadyLoggedInException;
+import com.ga.acme.exceptions.*;
 import com.ga.acme.interfaces.IUser;
 import com.ga.acme.models.Banker;
 import com.ga.acme.models.CheckingAccount;
@@ -18,7 +15,6 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.HexFormat;
-import java.util.List;
 import java.util.Map;
 
 import static com.ga.acme.util.FileHandler.getDataFromFile;
