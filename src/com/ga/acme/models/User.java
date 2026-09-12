@@ -16,7 +16,6 @@ abstract class User implements IUser {
     private int loginAttempts = 0;
     private LocalTime lockedUntil;
     private boolean isLoggedIn = false;
-    private boolean isActive;
 
     public User() {
     }
@@ -84,14 +83,6 @@ abstract class User implements IUser {
         isLoggedIn = loggedIn;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
     public SavingsAccount getSavingsAccount() {
         return savingsAccount;
     }
@@ -113,6 +104,6 @@ abstract class User implements IUser {
         String savingId = savingsAccount != null ? savingsAccount.getId() : null;
         String checkingId = checkingAccount != null ? checkingAccount.getId() : null;
 
-        return "id=" + id + ";name=" + name + ";hashedPassword=" + hashedPassword + ";role=" + role + ";loginAttempts=" + loginAttempts + ";lockedUntil=" + lockedUntil + ";isLoggedIn=" + isLoggedIn + ";checkingId=" + checkingId + ";savingId=" + savingId + ";isActive=" + isActive;
+        return "id=" + id + ";name=" + name + ";hashedPassword=" + hashedPassword + ";role=" + role + ";loginAttempts=" + loginAttempts + ";lockedUntil=" + lockedUntil + ";isLoggedIn=" + isLoggedIn + ";checkingId=" + checkingId + ";savingId=" + savingId;
     }
 }

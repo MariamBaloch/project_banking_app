@@ -35,10 +35,6 @@ public interface IUser {
 
     void setIsLoggedIn(boolean isLoggedIn);
 
-    boolean isActive();
-
-    void setActive(boolean active);
-
     SavingsAccount getSavingsAccount();
 
     void setSavingsAccount(SavingsAccount savingsAccount);
