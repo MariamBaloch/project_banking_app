@@ -21,9 +21,13 @@ public class FileHandler {
                     if (value[0].equals("id")) {
                         id = value[1];
                     }
-                    map.put(value[0], value[1]);
+                    if (value.length >= 2) {
+                        map.put(value[0], value[1]);
+                    }
                 }
-                result.put(id, map);
+                if (id != null) {
+                    result.put(id, map);
+                }
             }
         } catch (IOException e) {
             System.out.println("File not found");
