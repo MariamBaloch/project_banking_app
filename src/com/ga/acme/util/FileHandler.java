@@ -1,21 +1,29 @@
 package com.ga.acme.util;
 
 import java.io.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FileHandler {
 
-    public static HashMap<String, List<String>> getDataFromFile(String fileName) {
-        HashMap<String, List<String>> result = new HashMap<>();
+    public static HashMap<String, Map<String, String>> getDataFromFile(String fileName) {
+        HashMap<String, Map<String, String>> result = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] splitData = line.split(",");
-                List<String> values = Arrays.asList(splitData);
-                result.put(splitData[0], values.subList(1, values.size()));
+                String[] splitData = line.split(";");
+                Map<String, String> map = new HashMap<>();
+                String id = null;
+                for (String values : splitData) {
+                    String[] value = values.split("=");
+                    if (value[0].equals("id")) {
+                        id = value[1];
+                    }
+                    map.put(value[0], value[1]);
+                }
+                result.put(id, map);
             }
         } catch (IOException e) {
             System.out.println("File not found");
@@ -33,20 +41,28 @@ public class FileHandler {
     }
 
     public static void updateLineInFile(String fileName, String id, String newContent) {
-        HashMap<String, List<String>> result = getDataFromFile(fileName);
-        if (result.containsKey(id)) {
-            String[] splitValues = newContent.split(",");
-            result.replace(id, Arrays.stream(splitValues).toList().subList(1, splitValues.length));
-
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-                for (Map.Entry<String, List<String>> entry : result.entrySet()) {
-                    writer.write(entry.getKey() + "," + String.join(",", entry.getValue()));
-                    writer.newLine();
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("id=" + id + ";")) {
+                    lines.add(newContent);
+                } else {
+                    lines.add(line);
                 }
-            } catch (IOException e) {
-                System.out.println("Error updating file");
             }
+        } catch (IOException e) {
+            System.out.println("File not found");
+            return;
         }
 
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (String l : lines) {
+                writer.write(l);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating file");
+        }
     }
 }

@@ -113,6 +113,6 @@ abstract class User implements IUser {
         String savingId = savingsAccount != null ? savingsAccount.getId() : null;
         String checkingId = checkingAccount != null ? checkingAccount.getId() : null;
 
-        return id + "," + name + "," + hashedPassword + "," + role + "," + loginAttempts + "," + lockedUntil + "," + isLoggedIn + "," + checkingId + "," + savingId + "," + isActive;
+        return "id=" + id + ";name=" + name + ";hashedPassword=" + hashedPassword + ";role=" + role + ";loginAttempts=" + loginAttempts + ";lockedUntil=" + lockedUntil + ";isLoggedIn=" + isLoggedIn + ";checkingId=" + checkingId + ";savingId=" + savingId + ";isActive=" + isActive;
     }
 }

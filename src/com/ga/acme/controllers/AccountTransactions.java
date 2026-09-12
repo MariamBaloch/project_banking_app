@@ -12,7 +12,7 @@ import com.ga.acme.util.FileHandler;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.ga.acme.util.FileHandler.getDataFromFile;
@@ -57,28 +57,28 @@ public class AccountTransactions {
 
     public static IAccount getAccountById(String id) {
         IAccount acc = null;
-        HashMap<String, List<String>> accounts = getDataFromFile(FilePath.ACCOUNTS.getPath());
+        HashMap<String, Map<String, String>> accounts = getDataFromFile(FilePath.ACCOUNTS.getPath());
         try {
             if (accounts.containsKey(id)) {
-                List<String> values = accounts.get(id);
-                if (values.get(2).equalsIgnoreCase(AccountType.CHECKINGACCOUNT.toString())) {
+                Map<String, String> values = accounts.get(id);
+                if (values.get("type").equalsIgnoreCase(AccountType.CHECKINGACCOUNT.toString())) {
                     acc = new CheckingAccount();
-                } else if (values.get(2).equalsIgnoreCase(AccountType.SAVINGSACCOUNT.toString())) {
+                } else if (values.get("type").equalsIgnoreCase(AccountType.SAVINGSACCOUNT.toString())) {
                     acc = new SavingsAccount();
                 }
                 acc.setId(id);
-                acc.setBalance(Double.parseDouble(values.get(0)));
-                acc.setUserId(values.get(1));
-                acc.setMastercard(Boolean.parseBoolean(values.get(3)));
-                acc.setMastercardPlatinum(Boolean.parseBoolean(values.get(4)));
-                acc.setMastercardTitanium(Boolean.parseBoolean(values.get(5)));
-                acc.setOverdrafts(Integer.parseInt(values.get(6)));
-                acc.setOverdraftAmount(Double.parseDouble(values.get(7)));
-                acc.setLocked(Boolean.parseBoolean(values.get(8)));
-                acc.setDailyWithdrawn(Double.parseDouble(values.get(9)));
-                acc.setDailyDeposited(Double.parseDouble(values.get(10)));
-                acc.setDailyTransferred(Double.parseDouble(values.get(11)));
-                acc.setLastTransactionDate(values.get(12));
+                acc.setBalance(Double.parseDouble(values.get("balance")));
+                acc.setUserId(values.get("userId"));
+                acc.setMastercard(Boolean.parseBoolean(values.get("mastercard")));
+                acc.setMastercardPlatinum(Boolean.parseBoolean(values.get("mastercardPlatinum")));
+                acc.setMastercardTitanium(Boolean.parseBoolean(values.get("mastercardTitanium")));
+                acc.setOverdrafts(Integer.parseInt(values.get("overdrafts")));
+                acc.setOverdraftAmount(Double.parseDouble(values.get("overdraftAmount")));
+                acc.setLocked(Boolean.parseBoolean(values.get("isLocked")));
+                acc.setDailyWithdrawn(Double.parseDouble(values.get("dailyWithdrawn")));
+                acc.setDailyDeposited(Double.parseDouble(values.get("dailyDeposited")));
+                acc.setDailyTransferred(Double.parseDouble(values.get("dailyTransferred")));
+                acc.setLastTransactionDate(values.get("lastTransactionDate"));
 
             } else {
                 throw new RecordNotFoundException("Account with id " + id + " not found");

@@ -19,6 +19,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 
 import static com.ga.acme.util.FileHandler.getDataFromFile;
 
@@ -40,27 +41,27 @@ public class Auth {
 
     public static IUser getUserById(String id) {
         IUser user = null;
-        HashMap<String, List<String>> users = getDataFromFile(FilePath.USERS.getPath());
+        HashMap<String, Map<String, String>> users = getDataFromFile(FilePath.USERS.getPath());
         try {
             if (users.containsKey(id)) {
-                List<String> values = users.get(id);
-                if (values.get(2).equalsIgnoreCase("customer")) {
+                Map<String, String> values = users.get(id);
+                if (values.get("role").equalsIgnoreCase("customer")) {
                     user = new Customer();
-                } else if (values.get(2).equalsIgnoreCase("banker")) {
+                } else if (values.get("role").equalsIgnoreCase("banker")) {
                     user = new Banker();
                 }
                 user.setId(id);
-                user.setName(values.get(0));
-                user.setHashedPassword(values.get(1));
-                user.setRole(Roles.valueOf(values.get(2)));
-                user.setLoginAttempts(Integer.parseInt(values.get(3)));
-                user.setLockedUntil(!values.get(4).equals("null") ? LocalTime.parse(values.get(4)) : null);
-                user.setIsLoggedIn(values.get(5).equals("true"));
-                if (!values.get(6).equals("null")) {
-                    user.setCheckingAccount((CheckingAccount) AccountTransactions.getAccountById(values.get(6)));
+                user.setName(values.get("name"));
+                user.setHashedPassword(values.get("hashedPassword"));
+                user.setRole(Roles.valueOf(values.get("role")));
+                user.setLoginAttempts(Integer.parseInt(values.get("loginAttempts")));
+                user.setLockedUntil(!values.get("lockedUntil").equals("null") ? LocalTime.parse(values.get("lockedUntil")) : null);
+                user.setIsLoggedIn(Boolean.parseBoolean(values.get("isLoggedIn")));
+                if (!values.get("checkingId").equals("null")) {
+                    user.setCheckingAccount((CheckingAccount) AccountTransactions.getAccountById(values.get("checkingId")));
                 }
-                if (!values.get(7).equals("null")) {
-                    user.setSavingsAccount((SavingsAccount) AccountTransactions.getAccountById(values.get(7)));
+                if (!values.get("savingId").equals("null")) {
+                    user.setSavingsAccount((SavingsAccount) AccountTransactions.getAccountById(values.get("savingId")));
                 }
             } else {
                 throw new RecordNotFoundException("User with this id " + id + " does not exist");

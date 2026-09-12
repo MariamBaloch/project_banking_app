@@ -147,9 +147,9 @@ abstract class Account implements IAccount {
 
     @Override
     public String toString() {
-        return id + "," + balance + "," + userId + "," + getClass().getSimpleName() + ","
-                + mastercard + "," + mastercardPlatinum + "," + mastercardTitanium + ","
-                + overdrafts + "," + overdraftAmount + "," + isLocked + ","
-                + dailyWithdrawn + "," + dailyDeposited + "," + dailyTransferred + "," + lastTransactionDate;
+        return "id=" + id + ";balance=" + balance + ";userId=" + userId + ";type=" + getClass().getSimpleName() +
+                ";mastercard=" + mastercard + ";mastercardPlatinum=" + mastercardPlatinum + ";mastercardTitanium=" + mastercardTitanium +
+                ";overdrafts=" + overdrafts + ";overdraftAmount=" + overdraftAmount + ";isLocked=" + isLocked +
+                ";dailyWithdrawn=" + dailyWithdrawn + ";dailyDeposited=" + dailyDeposited + ";dailyTransferred=" + dailyTransferred + ";lastTransactionDate=" + lastTransactionDate;
     }
 }
