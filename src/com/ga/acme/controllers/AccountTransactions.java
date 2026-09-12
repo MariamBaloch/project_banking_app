@@ -22,13 +22,13 @@ public class AccountTransactions {
     public static final int OVERDRAFT_LIMIT = 2;
     public static final double OVERDRAFT_AMOUNT = 35;
 
-    public static void addAccount(String userId, String type, Boolean mastercard, Boolean mastercardPlatinum, Boolean mastercardTitanium) {
+    public static void addAccount(String userId, AccountType type, Boolean mastercard, Boolean mastercardPlatinum, Boolean mastercardTitanium) {
         IUser user = Auth.getUserById(userId);
         IAccount acc = null;
         String uniqueId = UUID.randomUUID().toString().substring(0, 8);
         try {
-            switch (type.toLowerCase()) {
-                case "checkingaccount":
+            switch (type) {
+                case CHECKINGACCOUNT:
                     if (user.getCheckingAccount() == null) {
                         acc = new CheckingAccount(uniqueId, user.getId(), mastercard, mastercardPlatinum, mastercardTitanium);
                         user.setCheckingAccount((CheckingAccount) acc);
@@ -36,7 +36,7 @@ public class AccountTransactions {
                         throw new AccountAlreadyExistsException("Checking account for this user already exists");
                     }
                     break;
-                case "savingsaccount":
+                case SAVINGSACCOUNT:
                     if (user.getSavingsAccount() == null) {
                         acc = new SavingsAccount(uniqueId, user.getId(), mastercard, mastercardPlatinum, mastercardTitanium);
                         user.setSavingsAccount((SavingsAccount) acc);

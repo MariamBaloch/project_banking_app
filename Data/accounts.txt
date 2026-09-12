@@ -1,2 +1,2 @@
-524954d9,300.0,5,CheckingAccount,true,false,false,0,0.0,false
-30e67dbe,400.0,5,SavingsAccount,true,false,false,0,0.0,false
+
+id=8cc04ee2;balance=0.0;userId=2;type=CheckingAccount;mastercard=false;mastercardPlatinum=true;mastercardTitanium=true;overdrafts=0;overdraftAmount=0.0;isLocked=false;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;lastTransactionDate=
