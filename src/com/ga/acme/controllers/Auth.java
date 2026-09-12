@@ -54,10 +54,10 @@ public class Auth {
                 user.setLockedUntil(!values.get("lockedUntil").equals("null") ? LocalTime.parse(values.get("lockedUntil")) : null);
                 user.setIsLoggedIn(Boolean.parseBoolean(values.get("isLoggedIn")));
                 if (!values.get("checkingId").equals("null")) {
-                    user.setCheckingAccount((CheckingAccount) AccountTransactions.getAccountById(values.get("checkingId")));
+                    user.setCheckingAccount((CheckingAccount) Account.getAccountById(values.get("checkingId")));
                 }
                 if (!values.get("savingId").equals("null")) {
-                    user.setSavingsAccount((SavingsAccount) AccountTransactions.getAccountById(values.get("savingId")));
+                    user.setSavingsAccount((SavingsAccount) Account.getAccountById(values.get("savingId")));
                 }
             } else {
                 throw new RecordNotFoundException("User with this id " + id + " does not exist");
