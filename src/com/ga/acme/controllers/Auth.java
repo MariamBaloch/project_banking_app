@@ -89,32 +89,39 @@ public class Auth {
         return MessageDigest.isEqual(storedHashBytes, enteredHashBytes);
     }
 
-    public static IUser signup(String id, String name, String password, String role) throws AccountAlreadyExistsException {
+    public static IUser signup(String id, String name, String password, Roles role) {
+        HashMap<String, Map<String, String>> users = getDataFromFile(FilePath.USERS.getPath());
         IUser user = null;
-
-        user = getUserById(id);
-        if (user.getId() != null) {
-            throw new AccountAlreadyExistsException("Account already exists, try a different id");
+        try {
+            if (users.containsKey(id)) {
+                throw new AccountAlreadyExistsException("Account already exists, try a different id");
+            }
+            user = switch (role) {
+                case CUSTOMER -> new Customer();
+                case BANKER -> new Banker();
+                default -> null;
+            };
+            if (user == null) {
+                throw new IllegalArgumentException("Role not supported, enter either BANKER or CUSTOMER");
+            }
+            user.setId(id);
+            user.setName(name);
+            user.setHashedPassword(encryptPassword(password));
+            user.setRole(role);
+            FileHandler.writeToFile(FilePath.USERS.getPath(), user);
+        } catch (AccountAlreadyExistsException e) {
+            System.out.println(e.getMessage());
         }
-
-        String transformedRole = role.toLowerCase();
-        user = switch (transformedRole) {
-            case "customer" -> new Customer();
-            case "banker" -> new Banker();
-            default -> user;
-        };
-        user.setId(id);
-        user.setName(name);
-        user.setHashedPassword(password);
-        user.setRole(Roles.valueOf(role));
-        FileHandler.writeToFile(FilePath.USERS.getPath(), user);
-
         return user;
     }
 
     public static IUser login(String id, String password) {
         try {
             IUser user = getUserById(id);
+
+            if (user == null) {
+                return null;
+            }
 
             if (user.getIsLoggedIn()) {
                 throw new UserAlreadyLoggedInException();
@@ -132,6 +139,8 @@ public class Auth {
                 if (user.getLoginAttempts() == MAX_LOGIN_ATTEMPT) {
                     if (user.getLockedUntil() == null) {
                         user.setLockedUntil(now.plusMinutes(1));
+                        FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
+                        throw new AccountLockedException("Max login attempt reached, please try again after one minute.");
                     } else if (now.isBefore(user.getLockedUntil())) {
                         throw new AccountLockedException("Max login attempt reached, please try again after one minute.");
                     } else {
@@ -141,11 +150,17 @@ public class Auth {
                 } else {
                     user.setLoginAttempts(user.getLoginAttempts() + 1);
                 }
+
+                FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
+                if (!isPasswordCorrect) {
+                    int remainingAttempts = MAX_LOGIN_ATTEMPT - user.getLoginAttempts() + 1;
+                    throw new InvalidPasswordException("Incorrect password, account will be locked after " + remainingAttempts + " more attempt(s)");
+                }
             }
 
             FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
             return user;
-        } catch (AccountLockedException | UserAlreadyLoggedInException e) {
+        } catch (AccountLockedException | UserAlreadyLoggedInException | InvalidPasswordException e) {
             System.out.println(e.getMessage());
             return null;
         }
@@ -153,6 +168,11 @@ public class Auth {
 
     public static void logout(String id) {
         IUser user = getUserById(id);
+
+        if (user == null) {
+            return;
+        }
+
         user.setIsLoggedIn(false);
         FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
     }
