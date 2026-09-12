@@ -1,0 +1,4 @@
+
+id=028a2b94;accountId=e1f8af67;type=MASTERCARDPLATINUM;dailyWithdrawn=900.0;dailyDeposited=0.0;dailyTransferred=2000.0;lastTransactionDate=2026-09-12
+id=0460b9d0;accountId=e1f8af67;type=MASTERCARDTITANIUM;dailyWithdrawn=0.0;dailyDeposited=700.0;dailyTransferred=0.0;lastTransactionDate=2026-09-12
+id=03c41c28;accountId=bd8e58ce;type=MASTERCARD;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;lastTransactionDate=null

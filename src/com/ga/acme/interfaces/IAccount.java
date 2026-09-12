@@ -1,6 +1,8 @@
 package com.ga.acme.interfaces;
 
-import java.time.LocalDate;
+import com.ga.acme.models.Mastercard;
+import com.ga.acme.models.MastercardPlatinum;
+import com.ga.acme.models.MastercardTitanium;
 
 public interface IAccount {
 
@@ -22,17 +24,17 @@ public interface IAccount {
 
     void setUserId(String userId);
 
-    boolean isMastercard();
+    Mastercard getMastercard();
 
-    void setMastercard(boolean mastercard);
+    void setMastercard(Mastercard mastercard);
 
-    boolean isMastercardTitanium();
+    MastercardTitanium getMastercardTitanium();
 
-    void setMastercardTitanium(boolean mastercardTitanium);
+    void setMastercardTitanium(MastercardTitanium mastercardTitanium);
 
-    boolean isMastercardPlatinum();
+    MastercardPlatinum getMastercardPlatinum();
 
-    void setMastercardPlatinum(boolean mastercardPlatinum);
+    void setMastercardPlatinum(MastercardPlatinum mastercardPlatinum);
 
     int getOverdrafts();
 
@@ -45,21 +47,4 @@ public interface IAccount {
     boolean isLocked();
 
     void setLocked(boolean locked);
-
-    double getDailyWithdrawn();
-
-    void setDailyWithdrawn(double dailyWithdrawn);
-
-    double getDailyDeposited();
-
-    void setDailyDeposited(double dailyDeposited);
-
-    double getDailyTransferred();
-
-    void setDailyTransferred(double dailyTransferred);
-
-    LocalDate getLastTransactionDate();
-
-    void setLastTransactionDate(LocalDate lastTransactionDate);
-
 }

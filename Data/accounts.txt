@@ -1,0 +1,2 @@
+id=e1f8af67;balance=-400.0;userId=2;type=CheckingAccount;mastercardId=null;mastercardPlatinumId=028a2b94;mastercardTitaniumId=0460b9d0;overdrafts=0;overdraftAmount=0.0;isLocked=false
+id=bd8e58ce;balance=1900.0;userId=2;type=SavingsAccount;mastercardId=03c41c28;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false

@@ -2,28 +2,24 @@ package com.ga.acme.models;
 
 import com.ga.acme.interfaces.IAccount;
 
-import java.time.LocalDate;
+import java.util.UUID;
 
 abstract class Account implements IAccount {
     private String id;
     private double balance;
     private String userId;
-    private boolean mastercard;
-    private boolean mastercardPlatinum;
-    private boolean mastercardTitanium;
+    private Mastercard mastercard;
+    private MastercardPlatinum mastercardPlatinum;
+    private MastercardTitanium mastercardTitanium;
     private int overdrafts = 0;
     private double overdraftAmount;
     private boolean isLocked;
-    private double dailyWithdrawn;
-    private double dailyDeposited;
-    private double dailyTransferred;
-    private LocalDate lastTransactionDate;
 
     public Account() {
     }
 
-    public Account(String id, String userId, boolean mastercard, boolean mastercardPlatinum, boolean mastercardTitanium) {
-        this.id = id;
+    public Account(String userId, Mastercard mastercard, MastercardPlatinum mastercardPlatinum, MastercardTitanium mastercardTitanium) {
+        this.id = UUID.randomUUID().toString().substring(0, 8);
         this.userId = userId;
         this.mastercard = mastercard;
         this.mastercardPlatinum = mastercardPlatinum;
@@ -67,27 +63,27 @@ abstract class Account implements IAccount {
         this.userId = userId;
     }
 
-    public boolean isMastercard() {
+    public Mastercard getMastercard() {
         return mastercard;
     }
 
-    public void setMastercard(boolean mastercard) {
+    public void setMastercard(Mastercard mastercard) {
         this.mastercard = mastercard;
     }
 
-    public boolean isMastercardTitanium() {
+    public MastercardTitanium getMastercardTitanium() {
         return mastercardTitanium;
     }
 
-    public void setMastercardTitanium(boolean mastercardTitanium) {
+    public void setMastercardTitanium(MastercardTitanium mastercardTitanium) {
         this.mastercardTitanium = mastercardTitanium;
     }
 
-    public boolean isMastercardPlatinum() {
+    public MastercardPlatinum getMastercardPlatinum() {
         return mastercardPlatinum;
     }
 
-    public void setMastercardPlatinum(boolean mastercardPlatinum) {
+    public void setMastercardPlatinum(MastercardPlatinum mastercardPlatinum) {
         this.mastercardPlatinum = mastercardPlatinum;
     }
 
@@ -115,43 +111,12 @@ abstract class Account implements IAccount {
         isLocked = locked;
     }
 
-    public double getDailyWithdrawn() {
-        return dailyWithdrawn;
-    }
-
-    public void setDailyWithdrawn(double dailyWithdrawn) {
-        this.dailyWithdrawn = dailyWithdrawn;
-    }
-
-    public double getDailyDeposited() {
-        return dailyDeposited;
-    }
-
-    public void setDailyDeposited(double dailyDeposited) {
-        this.dailyDeposited = dailyDeposited;
-    }
-
-    public double getDailyTransferred() {
-        return dailyTransferred;
-    }
-
-    public void setDailyTransferred(double dailyTransferred) {
-        this.dailyTransferred = dailyTransferred;
-    }
-
-    public LocalDate getLastTransactionDate() {
-        return lastTransactionDate;
-    }
-
-    public void setLastTransactionDate(LocalDate lastTransactionDate) {
-        this.lastTransactionDate = lastTransactionDate;
-    }
-
     @Override
     public String toString() {
-        return "id=" + id + ";balance=" + balance + ";userId=" + userId + ";type=" + getClass().getSimpleName() +
-                ";mastercard=" + mastercard + ";mastercardPlatinum=" + mastercardPlatinum + ";mastercardTitanium=" + mastercardTitanium +
-                ";overdrafts=" + overdrafts + ";overdraftAmount=" + overdraftAmount + ";isLocked=" + isLocked +
-                ";dailyWithdrawn=" + dailyWithdrawn + ";dailyDeposited=" + dailyDeposited + ";dailyTransferred=" + dailyTransferred + ";lastTransactionDate=" + lastTransactionDate;
+        String mastercardId = mastercard != null ? mastercard.getId() : null;
+        String mastercardPlatinumId = mastercardPlatinum != null ? mastercardPlatinum.getId() : null;
+        String mastercardTitaniumId = mastercardTitanium != null ? mastercardTitanium.getId() : null;
+
+        return "id=" + id + ";" + "balance=" + balance + ";" + "userId=" + userId + ";" + "type=" + getClass().getSimpleName() + ";" + "mastercardId=" + mastercardId + ";" + "mastercardPlatinumId=" + mastercardPlatinumId + ";" + "mastercardTitaniumId=" + mastercardTitaniumId + ";" + "overdrafts=" + overdrafts + ";" + "overdraftAmount=" + overdraftAmount + ";" + "isLocked=" + isLocked;
     }
 }

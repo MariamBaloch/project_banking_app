@@ -4,7 +4,7 @@ public class CheckingAccount extends Account {
     public CheckingAccount() {
     }
 
-    public CheckingAccount(String id, String userId, Boolean mastercard, Boolean mastercardPlatinum, Boolean mastercardTitanium) {
-        super(id, userId, mastercard, mastercardPlatinum, mastercardTitanium);
+    public CheckingAccount(String userId, Mastercard mastercard, MastercardPlatinum mastercardPlatinum, MastercardTitanium mastercardTitanium) {
+        super(userId, mastercard, mastercardPlatinum, mastercardTitanium);
     }
 }

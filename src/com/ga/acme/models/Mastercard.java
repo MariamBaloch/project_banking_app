@@ -1,7 +1,8 @@
 package com.ga.acme.models;
 
 public class Mastercard extends Card {
-    public Mastercard() {
+    public Mastercard(String accountId) {
+        super(accountId);
         setWithdrawLimitPerDay(5_000);
         setTransferLimitPerDay(10_000);
         setTransferLimitPerDayOwnAccount(20_000);
