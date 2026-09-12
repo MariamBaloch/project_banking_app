@@ -29,7 +29,8 @@ public class FileHandler {
                     result.put(id, map);
                 }
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             System.out.println("File not found");
         }
         return result;
@@ -37,9 +38,10 @@ public class FileHandler {
 
     public static void writeToFile(String fileName, Object object) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            writer.write(object.toString());
             writer.newLine();
-        } catch (IOException e) {
+            writer.write(object.toString());
+        } catch (
+                IOException e) {
             System.out.println("Error writing to file");
         }
     }
@@ -55,7 +57,8 @@ public class FileHandler {
                     lines.add(line);
                 }
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             System.out.println("File not found");
             return;
         }
@@ -65,7 +68,8 @@ public class FileHandler {
                 writer.write(l);
                 writer.newLine();
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             System.out.println("Error updating file");
         }
     }
