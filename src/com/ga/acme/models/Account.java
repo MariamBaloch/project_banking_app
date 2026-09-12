@@ -2,6 +2,8 @@ package com.ga.acme.models;
 
 import com.ga.acme.interfaces.IAccount;
 
+import java.time.LocalDate;
+
 abstract class Account implements IAccount {
     private String id;
     private double balance;
@@ -15,7 +17,7 @@ abstract class Account implements IAccount {
     private double dailyWithdrawn;
     private double dailyDeposited;
     private double dailyTransferred;
-    private String lastTransactionDate = "";
+    private LocalDate lastTransactionDate;
 
     public Account() {
     }
@@ -137,11 +139,11 @@ abstract class Account implements IAccount {
         this.dailyTransferred = dailyTransferred;
     }
 
-    public String getLastTransactionDate() {
+    public LocalDate getLastTransactionDate() {
         return lastTransactionDate;
     }
 
-    public void setLastTransactionDate(String lastTransactionDate) {
+    public void setLastTransactionDate(LocalDate lastTransactionDate) {
         this.lastTransactionDate = lastTransactionDate;
     }
 

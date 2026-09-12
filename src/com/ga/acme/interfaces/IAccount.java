@@ -1,5 +1,7 @@
 package com.ga.acme.interfaces;
 
+import java.time.LocalDate;
+
 public interface IAccount {
 
     String getId();
@@ -56,8 +58,8 @@ public interface IAccount {
 
     void setDailyTransferred(double dailyTransferred);
 
-    String getLastTransactionDate();
+    LocalDate getLastTransactionDate();
 
-    void setLastTransactionDate(String lastTransactionDate);
+    void setLastTransactionDate(LocalDate lastTransactionDate);
 
 }

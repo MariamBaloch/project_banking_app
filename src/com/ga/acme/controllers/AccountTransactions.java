@@ -78,7 +78,12 @@ public class AccountTransactions {
                 acc.setDailyWithdrawn(Double.parseDouble(values.get("dailyWithdrawn")));
                 acc.setDailyDeposited(Double.parseDouble(values.get("dailyDeposited")));
                 acc.setDailyTransferred(Double.parseDouble(values.get("dailyTransferred")));
-                acc.setLastTransactionDate(values.get("lastTransactionDate"));
+                String lastTransactionDate = values.get("lastTransactionDate");
+                if (!lastTransactionDate.isEmpty() && !lastTransactionDate.equals("null")) {
+                    acc.setLastTransactionDate(LocalDate.parse(lastTransactionDate));
+                } else {
+                    acc.setLastTransactionDate(null);
+                }
 
             } else {
                 throw new RecordNotFoundException("Account with id " + id + " not found");
@@ -89,38 +94,37 @@ public class AccountTransactions {
         return acc;
     }
 
-    public static void initialChecks(IUser user, AccountType accountType, CardType cardType) {
-        try {
-            if (!user.getIsLoggedIn()) {
-                throw new AccountNotLoggedInException();
-            }
-            if (accountType != AccountType.CHECKINGACCOUNT && accountType != AccountType.SAVINGSACCOUNT) {
-                throw new AccountTypeNotSupportedException();
-            }
+    public static void initialChecks(IUser user, AccountType accountType, CardType cardType) throws AccountNotLoggedInException, AccountTypeNotSupportedException, RecordNotFoundException, CardNotSupportedException {
+        if (!user.getIsLoggedIn()) {
+            throw new AccountNotLoggedInException();
+        }
+        if (accountType != AccountType.CHECKINGACCOUNT && accountType != AccountType.SAVINGSACCOUNT) {
+            throw new AccountTypeNotSupportedException();
+        }
 
-            IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
+        IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
 
-            if (account == null) {
-                throw new RecordNotFoundException("No " + accountType.toString().toLowerCase() + " found");
-            }
+        if (account == null) {
+            String outputAccountType = accountType == AccountType.SAVINGSACCOUNT ? "savings account" : "checking account";
+            throw new RecordNotFoundException("No " + outputAccountType + " found for user: " + user.getName());
+        }
 
-            boolean isCardSupported = switch (cardType) {
-                case MASTERCARD -> account.isMastercard();
-                case MASTERCARD_PLATINUM -> account.isMastercardPlatinum();
-                case MASTERCARD_TITANIUM -> account.isMastercardTitanium();
-            };
+        boolean isCardSupported = switch (cardType) {
+            case MASTERCARD -> account.isMastercard();
+            case MASTERCARD_PLATINUM -> account.isMastercardPlatinum();
+            case MASTERCARD_TITANIUM -> account.isMastercardTitanium();
+        };
 
-            if (!isCardSupported) {
-                throw new CardNotSupportedException();
-            }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        if (!isCardSupported) {
+            throw new CardNotSupportedException();
         }
     }
 
-    public static double withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
+    public static void withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
         IAccount account = getVerifiedAccount(userId, accountType, cardType);
+        if (account == null) {
+            return;
+        }
         ICard card = getCardForType(cardType);
         try {
             handleDailyLimits(account, amount, account.getDailyWithdrawn(), card.getWithdrawLimitPerDay(), "Withdraw");
@@ -148,18 +152,20 @@ public class AccountTransactions {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return account.getBalance();
     }
 
-    public static double resolveOverdraft(String userId, double paymentAmount, AccountType accountType, CardType cardType) {
+    public static void resolveOverdraft(String userId, double paymentAmount, AccountType accountType, CardType cardType) {
         IAccount account = getVerifiedAccount(userId, accountType, cardType);
+        if (account == null) {
+            return;
+        }
         try {
             double negativeBalance = account.getBalance() < 0 ? Math.abs(account.getBalance()) : 0;
             double totalDebt = negativeBalance + account.getOverdraftAmount();
 
             if (totalDebt == 0) {
                 System.out.println("No overdraft resolution needed.");
-                return account.getBalance();
+                return;
             }
 
             if (paymentAmount < totalDebt) {
@@ -179,11 +185,13 @@ public class AccountTransactions {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return account.getBalance();
     }
 
-    public static double transfer(String userId, double amount, AccountType fromAccountType, AccountType toAccountType, String toUserId, CardType cardType, boolean ownTransfer) {
+    public static void transfer(String userId, double amount, AccountType fromAccountType, AccountType toAccountType, String toUserId, CardType cardType, boolean ownTransfer) {
         IAccount fromAccount = getVerifiedAccount(userId, fromAccountType, cardType);
+        if (fromAccount == null) {
+            return;
+        }
         IAccount toAccount = getAccountById(toUserId);
         ICard card = getCardForType(cardType);
         try {
@@ -199,11 +207,13 @@ public class AccountTransactions {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return fromAccount.getBalance();
     }
 
-    public static double deposit(String userId, double amount, AccountType accountType, CardType cardType) {
+    public static void deposit(String userId, double amount, AccountType accountType, CardType cardType) {
         IAccount account = getVerifiedAccount(userId, accountType, cardType);
+        if (account == null) {
+            return;
+        }
         ICard card = getCardForType(cardType);
         try {
             handleDailyLimits(account, amount, account.getDailyDeposited(),
@@ -214,12 +224,16 @@ public class AccountTransactions {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return account.getBalance();
     }
 
     private static IAccount getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
         IUser user = Auth.getUserById(userId);
-        initialChecks(user, accountType, cardType);
+        try {
+            initialChecks(user, accountType, cardType);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
         return accountType == AccountType.CHECKINGACCOUNT
                 ? user.getCheckingAccount()
                 : user.getSavingsAccount();
@@ -234,8 +248,8 @@ public class AccountTransactions {
     }
 
     private static void handleDailyLimits(IAccount account, double amount, double dailyAmount, double limit, String transactionType) throws DailyLimitExceededException {
-        String today = LocalDate.now().toString();
-        if (!today.equals(account.getLastTransactionDate())) {
+        LocalDate today = LocalDate.now();
+        if (account.getLastTransactionDate() == null || !today.equals(account.getLastTransactionDate())) {
             account.setDailyWithdrawn(0);
             account.setDailyDeposited(0);
             account.setDailyTransferred(0);
@@ -246,6 +260,4 @@ public class AccountTransactions {
             throw new DailyLimitExceededException(transactionType + " daily limit of $" + limit + " exceeded. Used: $" + dailyAmount + ", Requested: $" + amount + ".");
         }
     }
-
-
 }
