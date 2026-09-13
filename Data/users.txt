@@ -1,2 +1,0 @@
-id=1;name=mawwy;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=true;checkingId=08af0136;savingId=ab9dcc86
-id=2;name=wawwy;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=null;savingId=944db7b8

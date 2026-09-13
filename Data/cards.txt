@@ -1,3 +1,0 @@
-id=5c2f1bc2;accountId=ab9dcc86;type=MASTERCARD;dailyWithdrawn=400.0;dailyDeposited=100000.0;dailyTransferred=10000.0;dailyTransferredOwnAccount=20000.0;dailyDepositedOwnAccount=100.0;lastTransactionDate=2026-09-13
-id=3b45a2f8;accountId=944db7b8;type=MASTERCARD;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=1e051033;accountId=08af0136;type=MASTERCARD;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
