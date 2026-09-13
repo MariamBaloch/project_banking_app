@@ -321,7 +321,7 @@ public class Transaction {
             System.out.print("Account Type" + ": " + entry.getValue().get("accountType") + ", ");
             System.out.print("Card Used" + ": " + entry.getValue().get("cardType") + ", ");
             String toUser = entry.getValue().get("toUser");
-            String toAccount = entry.getValue().get("toAccount");
+            String toAccount = entry.getValue().get("toAccountType");
             if (toUser != null && toAccount != null) {
                 System.out.print("To User" + ": " + toUser + ", ");
                 System.out.print("To Account Type" + ": " + toAccount + ", ");
