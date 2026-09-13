@@ -97,17 +97,22 @@ public class Account {
         return acc;
     }
 
-    protected static IAccount getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
+    protected static VerifiedAccountResult getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
         IUser user = Auth.getUserById(userId);
+        if (user == null) return null;
         try {
             initialChecks(user, accountType, cardType);
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
-        return accountType == AccountType.CHECKINGACCOUNT
+        IAccount account = accountType == AccountType.CHECKINGACCOUNT
                 ? user.getCheckingAccount()
                 : user.getSavingsAccount();
+
+        return new VerifiedAccountResult(user, account);
+    }
+
+    protected record VerifiedAccountResult(IUser user, IAccount account) {
     }
 }

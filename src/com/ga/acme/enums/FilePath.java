@@ -1,9 +1,10 @@
 package com.ga.acme.enums;
 
 public enum FilePath {
-    USERS("Data/users.txt"),
-    ACCOUNTS("Data/accounts.txt"),
-    CARDS("Data/cards.txt");
+    USERS("data/users.txt"),
+    ACCOUNTS("data/accounts.txt"),
+    CARDS("data/cards.txt"),
+    CUSTOMER_TRANSACTIONS("data/Customer-");
 
     private final String path;
 
