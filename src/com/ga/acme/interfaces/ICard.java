@@ -47,4 +47,12 @@ public interface ICard {
 
     void setLastTransactionDate(LocalDate lastTransactionDate);
 
+    double getDailyDepositedOwnAccount();
+
+    void setDailyDepositedOwnAccount(double dailyDepositedOwnAccount);
+
+    double getDailyTransferredOwnAccount();
+
+    void setDailyTransferredOwnAccount(double dailyTransferredOwnAccount);
+
 }

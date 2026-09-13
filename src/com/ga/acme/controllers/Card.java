@@ -22,12 +22,9 @@ public class Card {
             return null;
         }
         ICard card = switch (cardType) {
-            case MASTERCARD ->
-                    new Mastercard(accountId);
-            case MASTERCARDPLATINUM ->
-                    new MastercardPlatinum(accountId);
-            case MASTERCARDTITANIUM ->
-                    new MastercardTitanium(accountId);
+            case MASTERCARD -> new Mastercard(accountId);
+            case MASTERCARDPLATINUM -> new MastercardPlatinum(accountId);
+            case MASTERCARDTITANIUM -> new MastercardTitanium(accountId);
         };
         FileHandler.writeToFile(FilePath.CARDS.getPath(), card.toString());
         return card;
@@ -57,6 +54,8 @@ public class Card {
                 card.setDailyWithdrawn(Double.parseDouble(values.get("dailyWithdrawn")));
                 card.setDailyDeposited(Double.parseDouble(values.get("dailyDeposited")));
                 card.setDailyTransferred(Double.parseDouble(values.get("dailyTransferred")));
+                card.setDailyDepositedOwnAccount(Double.parseDouble(values.get("dailyDepositedOwnAccount")));
+                card.setDailyTransferredOwnAccount(Double.parseDouble(values.get("dailyTransferredOwnAccount")));
                 String lastTransactionDate = values.get("lastTransactionDate");
                 if (!lastTransactionDate.isEmpty() && !lastTransactionDate.equals("null")) {
                     card.setLastTransactionDate(LocalDate.parse(lastTransactionDate));
@@ -75,12 +74,9 @@ public class Card {
 
     protected static ICard getCardByTypeForAccount(IAccount account, CardType cardType) {
         return switch (cardType) {
-            case MASTERCARD ->
-                    account.getMastercard();
-            case MASTERCARDPLATINUM ->
-                    account.getMastercardPlatinum();
-            case MASTERCARDTITANIUM ->
-                    account.getMastercardTitanium();
+            case MASTERCARD -> account.getMastercard();
+            case MASTERCARDPLATINUM -> account.getMastercardPlatinum();
+            case MASTERCARDTITANIUM -> account.getMastercardTitanium();
         };
     }
 }

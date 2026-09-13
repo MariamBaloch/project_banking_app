@@ -35,15 +35,18 @@ public class Transaction {
             throw new RecordNotFoundException("No " + outputAccountType + " found for user: " + user.getName());
         }
 
-        boolean isCardSupported = switch (cardType) {
-            case MASTERCARD -> account.getMastercard() != null;
-            case MASTERCARDPLATINUM -> account.getMastercardPlatinum() != null;
-            case MASTERCARDTITANIUM -> account.getMastercardTitanium() != null;
-        };
+        if (cardType != null) {
+            boolean isCardSupported = switch (cardType) {
+                case MASTERCARD -> account.getMastercard() != null;
+                case MASTERCARDPLATINUM -> account.getMastercardPlatinum() != null;
+                case MASTERCARDTITANIUM -> account.getMastercardTitanium() != null;
+            };
 
-        if (!isCardSupported) {
-            throw new CardNotSupportedException();
+            if (!isCardSupported) {
+                throw new CardNotSupportedException();
+            }
         }
+
     }
 
     public static void withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
@@ -53,10 +56,14 @@ public class Transaction {
         }
         ICard card = getCardByTypeForAccount(account, cardType);
         try {
+            if (account.getBalance() >= 0 && account.getBalance() - amount < -100) {
+                throw new InsufficientAmountException("You do not have enough balance for this transaction");
+            }
+
             handleDailyLimits(card, amount, card.getDailyWithdrawn(), card.getWithdrawLimitPerDay(), "Withdraw");
             if (account.isLocked()) {
                 throw new AccountLockedException(
-                        "Account is locked due to reaching overdraft limit. Pay off your negative balance and $" + account.getOverdraftAmount() + " overdraft fee to unlock.");
+                        "Account is locked due to reaching overdraft limit. Pay off your negative balance of $" + Math.abs(account.getBalance()) + " and $" + account.getOverdraftAmount() + " overdraft fee to unlock.");
             }
             if (account.getBalance() < 0 && amount > 100) {
                 throw new WithdrawLimitException(
@@ -82,8 +89,8 @@ public class Transaction {
         }
     }
 
-    public static void resolveOverdraft(String userId, double paymentAmount, AccountType accountType, CardType cardType) {
-        IAccount account = getVerifiedAccount(userId, accountType, cardType);
+    public static void resolveOverdraft(String userId, double paymentAmount, AccountType accountType) {
+        IAccount account = getVerifiedAccount(userId, accountType, null);
         if (account == null) {
             return;
         }
@@ -116,19 +123,26 @@ public class Transaction {
         }
     }
 
-    public static void transfer(String userId, double amount, AccountType fromAccountType, AccountType toAccountType, String toUserId, CardType cardType) {
+    public static void transfer(String userId, double amount, AccountType fromAccountType, CardType cardType, String toUserId, AccountType toAccountType, Boolean depositToAnotherAccount) {
         IAccount fromAccount = getVerifiedAccount(userId, fromAccountType, cardType);
         if (fromAccount == null) {
             return;
         }
-        boolean ownTransfer = userId.equals(toUserId);
-        if (ownTransfer && toAccountType.equals(fromAccountType)) {
-            throw new IllegalArgumentException("Transferring to same account type for same user not allowed");
-        }
-        IUser toUser = Auth.getUserById(toUserId);
 
-        IAccount toAccount = AccountType.CHECKINGACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
+        boolean ownTransfer = userId.equals(toUserId);
         try {
+            if (fromAccount.getBalance() < amount) {
+                throw new InsufficientAmountException("You do not have enough balance for this transaction");
+            }
+
+            if (ownTransfer && toAccountType.equals(fromAccountType)) {
+                throw new IllegalArgumentException("Transferring to same account type for same user not allowed");
+            }
+
+            IUser toUser = Auth.getUserById(toUserId);
+
+            IAccount toAccount = AccountType.CHECKINGACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
+
             if (toAccount == null) {
                 String outputAccountType = toAccountType == AccountType.SAVINGSACCOUNT ? "savings account" : "checking account";
                 throw new RecordNotFoundException("No " + outputAccountType + " found for user: " + toUser.getName());
@@ -136,12 +150,35 @@ public class Transaction {
 
             ICard card = getCardByTypeForAccount(fromAccount, cardType);
 
-            double limit = ownTransfer ? card.getTransferLimitPerDayOwnAccount() : card.getTransferLimitPerDay();
-            String transactionType = ownTransfer ? "Transfer to own account" : "Transfer";
-            handleDailyLimits(card, amount, card.getDailyTransferred(), limit, transactionType);
+            double limit = 0;
+            String transactionType = null;
+            double dailyUsed = 0;
+
+            if (ownTransfer) {
+                limit = card.getTransferLimitPerDayOwnAccount();
+                transactionType = "Transfer to own account";
+                dailyUsed = card.getDailyTransferredOwnAccount();
+            } else if (depositToAnotherAccount) {
+                limit = card.getDepositLimitPerDay();
+                transactionType = "Deposit to another account";
+                dailyUsed = card.getDailyDeposited();
+            } else {
+                limit = card.getTransferLimitPerDay();
+                transactionType = "Transfer";
+                dailyUsed = card.getDailyTransferred();
+            }
+
+            handleDailyLimits(card, amount, dailyUsed, limit, transactionType);
 
             fromAccount.transferFunds(amount, toAccount);
-            card.setDailyTransferred(card.getDailyTransferred() + amount);
+
+            if (ownTransfer) {
+                card.setDailyTransferredOwnAccount(card.getDailyTransferredOwnAccount() + amount);
+            } else if (depositToAnotherAccount) {
+                card.setDailyDeposited(card.getDailyDeposited() + amount);
+            } else {
+                card.setDailyTransferred(card.getDailyTransferred() + amount);
+            }
 
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), fromAccount.getId(), fromAccount.toString());
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), toAccount.getId(), toAccount.toString());
@@ -158,7 +195,7 @@ public class Transaction {
         }
         ICard card = getCardByTypeForAccount(account, cardType);
         try {
-            handleDailyLimits(card, amount, card.getDailyDeposited(),
+            handleDailyLimits(card, amount, card.getDailyDepositedOwnAccount(),
                     card.getDepositLimitPerDayOwnAccount(), "Deposit");
             account.deposit(amount);
             card.setDailyDeposited(card.getDailyDeposited() + amount);
@@ -180,8 +217,7 @@ public class Transaction {
             dailyAmount = 0;
         }
         if (dailyAmount + amount > limit) {
-            throw new DailyLimitExceededException(card.getClass().getSimpleName() + ": " + transactionType + " daily limit of $" + limit + " exceeded. Used: $" + dailyAmount + ", Requested: $" + amount + "."
-            );
+            throw new DailyLimitExceededException(card.getClass().getSimpleName() + ": " + transactionType + " daily limit of $" + limit + " exceeded. Used: $" + dailyAmount + ", Requested: $" + amount + ", Remaining: $" + (limit - dailyAmount));
         }
     }
 

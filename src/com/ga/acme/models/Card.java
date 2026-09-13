@@ -16,6 +16,8 @@ abstract class Card implements ICard {
     private double dailyWithdrawn;
     private double dailyDeposited;
     private double dailyTransferred;
+    private double dailyTransferredOwnAccount;
+    private double dailyDepositedOwnAccount;
     private LocalDate lastTransactionDate;
 
     public Card(String accountId) {
@@ -111,8 +113,32 @@ abstract class Card implements ICard {
         this.lastTransactionDate = lastTransactionDate;
     }
 
+    public double getDailyDepositedOwnAccount() {
+        return dailyDepositedOwnAccount;
+    }
+
+    public void setDailyDepositedOwnAccount(double dailyDepositedOwnAccount) {
+        this.dailyDepositedOwnAccount = dailyDepositedOwnAccount;
+    }
+
+    public double getDailyTransferredOwnAccount() {
+        return dailyTransferredOwnAccount;
+    }
+
+    public void setDailyTransferredOwnAccount(double dailyTransferredOwnAccount) {
+        this.dailyTransferredOwnAccount = dailyTransferredOwnAccount;
+    }
+
     @Override
     public String toString() {
-        return "id=" + id + ";" + "accountId=" + accountId + ";" + "type=" + getClass().getSimpleName().toUpperCase() + ";" + "dailyWithdrawn=" + dailyWithdrawn + ";" + "dailyDeposited=" + dailyDeposited + ";" + "dailyTransferred=" + dailyTransferred + ";" + "lastTransactionDate=" + (lastTransactionDate == null ? "null" : lastTransactionDate);
+        return "id=" + id + ";"
+                + "accountId=" + accountId + ";"
+                + "type=" + getClass().getSimpleName().toUpperCase() + ";"
+                + "dailyWithdrawn=" + dailyWithdrawn + ";"
+                + "dailyDeposited=" + dailyDeposited + ";"
+                + "dailyTransferred=" + dailyTransferred + ";"
+                + "dailyTransferredOwnAccount=" + dailyTransferredOwnAccount + ";"
+                + "dailyDepositedOwnAccount=" + dailyDepositedOwnAccount + ";"
+                + "lastTransactionDate=" + (lastTransactionDate == null ? "null" : lastTransactionDate);
     }
 }
