@@ -1,11 +1,13 @@
 package com.ga.acme.models;
 
+import com.ga.acme.enums.CardType;
 import com.ga.acme.interfaces.ICard;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.UUID;
 
-abstract class Card implements ICard {
+public abstract class Card implements ICard {
     private String id;
     private String accountId;
     private double withdrawLimitPerDay;
@@ -23,6 +25,35 @@ abstract class Card implements ICard {
     public Card(String accountId) {
         this.id = UUID.randomUUID().toString().substring(0, 8);
         this.accountId = accountId;
+    }
+
+    public static ICard mapToCardObject(Map<String, String> values) {
+        ICard card = null;
+        String type = values.get("type");
+        String accountId = values.get("accountId");
+
+        if (type.equalsIgnoreCase(CardType.MASTERCARD.toString())) {
+            card = new Mastercard(accountId);
+        } else if (type.equalsIgnoreCase(CardType.MASTERCARDPLATINUM.toString())) {
+            card = new MastercardPlatinum(accountId);
+        } else if (type.equalsIgnoreCase(CardType.MASTERCARDTITANIUM.toString())) {
+            card = new MastercardTitanium(accountId);
+        }
+        card.setId(values.get("id"));
+        card.setAccountId(values.get("accountId"));
+        card.setDailyWithdrawn(Double.parseDouble(values.get("dailyWithdrawn")));
+        card.setDailyDeposited(Double.parseDouble(values.get("dailyDeposited")));
+        card.setDailyTransferred(Double.parseDouble(values.get("dailyTransferred")));
+        card.setDailyDepositedOwnAccount(Double.parseDouble(values.get("dailyDepositedOwnAccount")));
+        card.setDailyTransferredOwnAccount(Double.parseDouble(values.get("dailyTransferredOwnAccount")));
+        String lastTransactionDate = values.get("lastTransactionDate");
+        if (!lastTransactionDate.isEmpty() && !lastTransactionDate.equals("null")) {
+            card.setLastTransactionDate(LocalDate.parse(lastTransactionDate));
+        } else {
+            card.setLastTransactionDate(null);
+        }
+
+        return card;
     }
 
     public String getId() {

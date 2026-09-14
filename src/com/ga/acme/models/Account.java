@@ -1,10 +1,14 @@
 package com.ga.acme.models;
 
+import com.ga.acme.enums.AccountType;
 import com.ga.acme.interfaces.IAccount;
 
+import java.util.Map;
 import java.util.UUID;
 
-abstract class Account implements IAccount {
+import static com.ga.acme.services.CardService.getCardById;
+
+public abstract class Account implements IAccount {
     private String id;
     private double balance;
     private String userId;
@@ -24,6 +28,33 @@ abstract class Account implements IAccount {
         this.mastercard = mastercard;
         this.mastercardPlatinum = mastercardPlatinum;
         this.mastercardTitanium = mastercardTitanium;
+    }
+
+    public static IAccount mapToAccountObject(Map<String, String> values) {
+        IAccount acc = null;
+
+        if (values.get("type").equalsIgnoreCase(AccountType.CHECKINGACCOUNT.toString())) {
+            acc = new CheckingAccount();
+        } else if (values.get("type").equalsIgnoreCase(AccountType.SAVINGSACCOUNT.toString())) {
+            acc = new SavingsAccount();
+        }
+        acc.setId(values.get("id"));
+        acc.setBalance(Double.parseDouble(values.get("balance")));
+        acc.setUserId(values.get("userId"));
+        if (!values.get("mastercardId").equals("null")) {
+            acc.setMastercard((Mastercard) getCardById(values.get("mastercardId")));
+        }
+        if (!values.get("mastercardPlatinumId").equals("null")) {
+            acc.setMastercardPlatinum((MastercardPlatinum) getCardById(values.get("mastercardPlatinumId")));
+        }
+        if (!values.get("mastercardTitaniumId").equals("null")) {
+            acc.setMastercardTitanium((MastercardTitanium) getCardById(values.get("mastercardTitaniumId")));
+        }
+        acc.setOverdrafts(Integer.parseInt(values.get("overdrafts")));
+        acc.setOverdraftAmount(Double.parseDouble(values.get("overdraftAmount")));
+        acc.setLocked(Boolean.parseBoolean(values.get("isLocked")));
+
+        return acc;
     }
 
     public double getBalance() {

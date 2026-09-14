@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.ga.acme.services.CardService.addCard;
-import static com.ga.acme.services.CardService.getCardById;
 import static com.ga.acme.services.TransactionService.initialChecks;
 import static com.ga.acme.util.FileHandler.getDataFromFile;
 
@@ -65,27 +64,7 @@ public class AccountService {
         try {
             if (accounts.containsKey(id)) {
                 Map<String, String> values = accounts.get(id);
-                if (values.get("type").equalsIgnoreCase(AccountType.CHECKINGACCOUNT.toString())) {
-                    acc = new CheckingAccount();
-                } else if (values.get("type").equalsIgnoreCase(AccountType.SAVINGSACCOUNT.toString())) {
-                    acc = new SavingsAccount();
-                }
-                acc.setId(id);
-                acc.setBalance(Double.parseDouble(values.get("balance")));
-                acc.setUserId(values.get("userId"));
-                if (!values.get("mastercardId").equals("null")) {
-                    acc.setMastercard((Mastercard) getCardById(values.get("mastercardId")));
-                }
-                if (!values.get("mastercardPlatinumId").equals("null")) {
-                    acc.setMastercardPlatinum((MastercardPlatinum) getCardById(values.get("mastercardPlatinumId")));
-                }
-                if (!values.get("mastercardTitaniumId").equals("null")) {
-                    acc.setMastercardTitanium((MastercardTitanium) getCardById(values.get("mastercardTitaniumId")));
-                }
-                acc.setOverdrafts(Integer.parseInt(values.get("overdrafts")));
-                acc.setOverdraftAmount(Double.parseDouble(values.get("overdraftAmount")));
-                acc.setLocked(Boolean.parseBoolean(values.get("isLocked")));
-
+                acc = Account.mapToAccountObject(values);
             } else {
                 throw new RecordNotFoundException("Account with id " + id + " not found");
             }
