@@ -1,8 +1,7 @@
 package com.ga.acme.interfaces;
 
 import com.ga.acme.enums.Roles;
-import com.ga.acme.models.CheckingAccount;
-import com.ga.acme.models.SavingsAccount;
+import com.ga.acme.models.Account;
 
 import java.time.LocalTime;
 
@@ -35,11 +34,11 @@ public interface IUser {
 
     void setIsLoggedIn(boolean isLoggedIn);
 
-    SavingsAccount getSavingsAccount();
+    Account getSavingsAccount();
 
-    void setSavingsAccount(SavingsAccount savingsAccount);
+    void setSavingsAccount(Account savingsAccount);
 
-    CheckingAccount getCheckingAccount();
+    Account getCheckingAccount();
 
-    void setCheckingAccount(CheckingAccount checkingAccount);
+    void setCheckingAccount(Account checkingAccount);
 }

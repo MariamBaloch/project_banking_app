@@ -9,8 +9,8 @@ import java.time.LocalTime;
 import java.util.Map;
 
 public abstract class User implements IUser {
-    SavingsAccount savingsAccount;
-    CheckingAccount checkingAccount;
+    Account savingsAccount;
+    Account checkingAccount;
     private String id;
     private String name;
     private String hashedPassword;
@@ -45,10 +45,10 @@ public abstract class User implements IUser {
         user.setLockedUntil(!values.get("lockedUntil").equals("null") ? LocalTime.parse(values.get("lockedUntil")) : null);
         user.setIsLoggedIn(Boolean.parseBoolean(values.get("isLoggedIn")));
         if (!values.get("checkingId").equals("null")) {
-            user.setCheckingAccount((CheckingAccount) AccountService.getAccountById(values.get("checkingId")));
+            user.setCheckingAccount(AccountService.getAccountById(values.get("checkingId")));
         }
         if (!values.get("savingId").equals("null")) {
-            user.setSavingsAccount((SavingsAccount) AccountService.getAccountById(values.get("savingId")));
+            user.setSavingsAccount(AccountService.getAccountById(values.get("savingId")));
         }
         return user;
     }
@@ -109,19 +109,19 @@ public abstract class User implements IUser {
         isLoggedIn = loggedIn;
     }
 
-    public SavingsAccount getSavingsAccount() {
+    public Account getSavingsAccount() {
         return savingsAccount;
     }
 
-    public void setSavingsAccount(SavingsAccount savingsAccount) {
+    public void setSavingsAccount(Account savingsAccount) {
         this.savingsAccount = savingsAccount;
     }
 
-    public CheckingAccount getCheckingAccount() {
+    public Account getCheckingAccount() {
         return checkingAccount;
     }
 
-    public void setCheckingAccount(CheckingAccount checkingAccount) {
+    public void setCheckingAccount(Account checkingAccount) {
         this.checkingAccount = checkingAccount;
     }
 
@@ -130,6 +130,14 @@ public abstract class User implements IUser {
         String savingId = savingsAccount != null ? savingsAccount.getId() : null;
         String checkingId = checkingAccount != null ? checkingAccount.getId() : null;
 
-        return "id=" + id + ";name=" + name + ";hashedPassword=" + hashedPassword + ";role=" + role + ";loginAttempts=" + loginAttempts + ";lockedUntil=" + lockedUntil + ";isLoggedIn=" + isLoggedIn + ";checkingId=" + checkingId + ";savingId=" + savingId;
+        return "id=" + id
+                + ";name=" + name
+                + ";hashedPassword=" + hashedPassword
+                + ";role=" + role
+                + ";loginAttempts=" + loginAttempts
+                + ";lockedUntil=" + lockedUntil
+                + ";isLoggedIn=" + isLoggedIn
+                + ";checkingId=" + checkingId
+                + ";savingId=" + savingId;
     }
 }

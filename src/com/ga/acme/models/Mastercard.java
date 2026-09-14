@@ -1,8 +1,10 @@
 package com.ga.acme.models;
 
+import com.ga.acme.enums.CardType;
+
 public class Mastercard extends Card {
     public Mastercard(String accountId) {
-        super(accountId);
+        super(accountId, CardType.MASTERCARD);
         setWithdrawLimitPerDay(5_000);
         setTransferLimitPerDay(10_000);
         setTransferLimitPerDayOwnAccount(20_000);

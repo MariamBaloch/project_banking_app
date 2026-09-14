@@ -5,9 +5,9 @@ import com.ga.acme.enums.CardType;
 import com.ga.acme.enums.FilePath;
 import com.ga.acme.enums.TransactionType;
 import com.ga.acme.exceptions.*;
-import com.ga.acme.interfaces.IAccount;
 import com.ga.acme.interfaces.ICard;
 import com.ga.acme.interfaces.IUser;
+import com.ga.acme.models.Account;
 import com.ga.acme.models.TransactionRecord;
 import com.ga.acme.util.FileHandler;
 
@@ -31,7 +31,7 @@ public class TransactionService {
             throw new AccountTypeNotSupportedException();
         }
 
-        IAccount account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
+        Account account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
 
         if (account == null) {
             String outputAccountType = accountType == AccountType.SAVINGS_ACCOUNT ? "savings account" : "checking account";
@@ -57,7 +57,7 @@ public class TransactionService {
         if (verifiedAccountResult == null) {
             return;
         }
-        IAccount account = verifiedAccountResult.account();
+        Account account = verifiedAccountResult.account();
         IUser user = verifiedAccountResult.user();
 
         ICard card = getCardByTypeForAccount(account, cardType);
@@ -116,7 +116,7 @@ public class TransactionService {
         if (verifiedAccountResult == null) {
             return;
         }
-        IAccount account = verifiedAccountResult.account();
+        Account account = verifiedAccountResult.account();
         IUser user = verifiedAccountResult.user();
         try {
             double negativeBalance = account.getBalance() < 0 ? Math.abs(account.getBalance()) : 0;
@@ -167,7 +167,7 @@ public class TransactionService {
         if (verifiedAccountResult == null) {
             return;
         }
-        IAccount fromAccount = verifiedAccountResult.account();
+        Account fromAccount = verifiedAccountResult.account();
         IUser fromUser = verifiedAccountResult.user();
 
         boolean ownTransfer = userId.equals(toUserId);
@@ -181,7 +181,7 @@ public class TransactionService {
             }
 
             IUser toUser = AuthService.getUserById(toUserId);
-            IAccount toAccount = AccountType.CHECKING_ACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
+            Account toAccount = AccountType.CHECKING_ACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
 
             if (toAccount == null) {
                 String outputAccountType = toAccountType == AccountType.SAVINGS_ACCOUNT ? AccountType.SAVINGS_ACCOUNT.getDisplayName() : AccountType.CHECKING_ACCOUNT.getDisplayName();
@@ -252,7 +252,7 @@ public class TransactionService {
         if (verifiedAccount == null) {
             return;
         }
-        IAccount account = verifiedAccount.account();
+        Account account = verifiedAccount.account();
         IUser user = verifiedAccount.user();
 
         ICard card = getCardByTypeForAccount(account, cardType);

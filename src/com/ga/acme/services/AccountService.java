@@ -6,9 +6,11 @@ import com.ga.acme.enums.FilePath;
 import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountTypeNotSupportedException;
 import com.ga.acme.exceptions.RecordNotFoundException;
-import com.ga.acme.interfaces.IAccount;
 import com.ga.acme.interfaces.IUser;
-import com.ga.acme.models.*;
+import com.ga.acme.models.Account;
+import com.ga.acme.models.Mastercard;
+import com.ga.acme.models.MastercardPlatinum;
+import com.ga.acme.models.MastercardTitanium;
 import com.ga.acme.util.FileHandler;
 
 import java.util.HashMap;
@@ -21,22 +23,22 @@ import static com.ga.acme.util.FileHandler.getDataFromFile;
 public class AccountService {
     public static void addAccount(String userId, AccountType type, Boolean mastercard, Boolean mastercardPlatinum, Boolean mastercardTitanium) {
         IUser user = AuthService.getUserById(userId);
-        IAccount acc = null;
+        Account acc = null;
 
         try {
             switch (type) {
                 case CHECKING_ACCOUNT:
                     if (user.getCheckingAccount() == null) {
-                        acc = new CheckingAccount(user.getId(), null, null, null);
-                        user.setCheckingAccount((CheckingAccount) acc);
+                        acc = new Account(user.getId(), AccountType.CHECKING_ACCOUNT, null, null, null);
+                        user.setCheckingAccount(acc);
                     } else {
                         throw new AccountAlreadyExistsException("Checking account for this user already exists");
                     }
                     break;
                 case SAVINGS_ACCOUNT:
                     if (user.getSavingsAccount() == null) {
-                        acc = new SavingsAccount(user.getId(), null, null, null);
-                        user.setSavingsAccount((SavingsAccount) acc);
+                        acc = new Account(user.getId(), AccountType.SAVINGS_ACCOUNT, null, null, null);
+                        user.setSavingsAccount(acc);
                     } else {
                         throw new AccountAlreadyExistsException("Savings account for this user already exists");
                     }
@@ -58,8 +60,8 @@ public class AccountService {
         }
     }
 
-    public static IAccount getAccountById(String id) {
-        IAccount acc = null;
+    public static Account getAccountById(String id) {
+        Account acc = null;
         HashMap<String, Map<String, String>> accounts = getDataFromFile(FilePath.ACCOUNTS.getPath());
         try {
             if (accounts.containsKey(id)) {
@@ -84,13 +86,13 @@ public class AccountService {
             System.out.println(e.getMessage());
             return null;
         }
-        IAccount account = accountType == AccountType.CHECKING_ACCOUNT
+        Account account = accountType == AccountType.CHECKING_ACCOUNT
                 ? user.getCheckingAccount()
                 : user.getSavingsAccount();
 
         return new VerifiedAccountResult(user, account);
     }
 
-    protected record VerifiedAccountResult(IUser user, IAccount account) {
+    protected record VerifiedAccountResult(IUser user, Account account) {
     }
 }

@@ -1,17 +1,17 @@
 package com.ga.acme.models;
 
 import com.ga.acme.enums.AccountType;
-import com.ga.acme.interfaces.IAccount;
 
 import java.util.Map;
 import java.util.UUID;
 
 import static com.ga.acme.services.CardService.getCardById;
 
-public abstract class Account implements IAccount {
+public class Account {
     private String id;
     private double balance;
     private String userId;
+    private AccountType accountType;
     private Mastercard mastercard;
     private MastercardPlatinum mastercardPlatinum;
     private MastercardTitanium mastercardTitanium;
@@ -22,25 +22,26 @@ public abstract class Account implements IAccount {
     public Account() {
     }
 
-    public Account(String userId, Mastercard mastercard, MastercardPlatinum mastercardPlatinum, MastercardTitanium mastercardTitanium) {
+    public Account(String userId, AccountType accountType, Mastercard mastercard, MastercardPlatinum mastercardPlatinum, MastercardTitanium mastercardTitanium) {
         this.id = UUID.randomUUID().toString().substring(0, 8);
+        this.accountType = accountType;
         this.userId = userId;
         this.mastercard = mastercard;
         this.mastercardPlatinum = mastercardPlatinum;
         this.mastercardTitanium = mastercardTitanium;
     }
 
-    public static IAccount mapToAccountObject(Map<String, String> values) {
-        IAccount acc = null;
+    public static Account mapToAccountObject(Map<String, String> values) {
+        Account acc = new Account();
 
-        if (values.get("type").equalsIgnoreCase(AccountType.CHECKING_ACCOUNT.toString())) {
-            acc = new CheckingAccount();
-        } else if (values.get("type").equalsIgnoreCase(AccountType.SAVINGS_ACCOUNT.toString())) {
-            acc = new SavingsAccount();
-        }
         acc.setId(values.get("id"));
         acc.setBalance(Double.parseDouble(values.get("balance")));
         acc.setUserId(values.get("userId"));
+        if (values.get("accountType").equalsIgnoreCase(AccountType.CHECKING_ACCOUNT.getDisplayName())) {
+            acc.setAccountType(AccountType.CHECKING_ACCOUNT);
+        } else if (values.get("accountType").equalsIgnoreCase(AccountType.SAVINGS_ACCOUNT.getDisplayName())) {
+            acc.setAccountType(AccountType.SAVINGS_ACCOUNT);
+        }
         if (!values.get("mastercardId").equals("null")) {
             acc.setMastercard((Mastercard) getCardById(values.get("mastercardId")));
         }
@@ -55,6 +56,14 @@ public abstract class Account implements IAccount {
         acc.setLocked(Boolean.parseBoolean(values.get("isLocked")));
 
         return acc;
+    }
+
+    public AccountType getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
     }
 
     public double getBalance() {
@@ -81,7 +90,7 @@ public abstract class Account implements IAccount {
         balance -= amount;
     }
 
-    public void transferFunds(double amount, IAccount account) {
+    public void transferFunds(double amount, Account account) {
         this.withdraw(amount);
         account.deposit(amount);
     }
@@ -148,6 +157,15 @@ public abstract class Account implements IAccount {
         String mastercardPlatinumId = mastercardPlatinum != null ? mastercardPlatinum.getId() : null;
         String mastercardTitaniumId = mastercardTitanium != null ? mastercardTitanium.getId() : null;
 
-        return "id=" + id + ";" + "balance=" + balance + ";" + "userId=" + userId + ";" + "type=" + getClass().getSimpleName() + ";" + "mastercardId=" + mastercardId + ";" + "mastercardPlatinumId=" + mastercardPlatinumId + ";" + "mastercardTitaniumId=" + mastercardTitaniumId + ";" + "overdrafts=" + overdrafts + ";" + "overdraftAmount=" + overdraftAmount + ";" + "isLocked=" + isLocked;
+        return "id=" + id + ";"
+                + "balance=" + balance + ";"
+                + "userId=" + userId + ";"
+                + "accountType=" + accountType.getDisplayName() + ";"
+                + "mastercardId=" + mastercardId + ";"
+                + "mastercardPlatinumId=" + mastercardPlatinumId + ";"
+                + "mastercardTitaniumId=" + mastercardTitaniumId + ";"
+                + "overdrafts=" + overdrafts + ";"
+                + "overdraftAmount=" + overdraftAmount + ";"
+                + "isLocked=" + isLocked;
     }
 }

@@ -3,12 +3,8 @@ package com.ga.acme.services;
 import com.ga.acme.enums.CardType;
 import com.ga.acme.enums.FilePath;
 import com.ga.acme.exceptions.RecordNotFoundException;
-import com.ga.acme.interfaces.IAccount;
 import com.ga.acme.interfaces.ICard;
-import com.ga.acme.models.Card;
-import com.ga.acme.models.Mastercard;
-import com.ga.acme.models.MastercardPlatinum;
-import com.ga.acme.models.MastercardTitanium;
+import com.ga.acme.models.*;
 import com.ga.acme.util.FileHandler;
 
 import java.util.HashMap;
@@ -47,7 +43,7 @@ public class CardService {
         return card;
     }
 
-    protected static ICard getCardByTypeForAccount(IAccount account, CardType cardType) {
+    protected static ICard getCardByTypeForAccount(Account account, CardType cardType) {
         return switch (cardType) {
             case MASTERCARD -> account.getMastercard();
             case MASTERCARD_PLATINUM -> account.getMastercardPlatinum();

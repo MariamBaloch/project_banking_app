@@ -51,7 +51,7 @@ public class Main {
                     break;
                 default:
                     System.out.println("Invalid input");
-                    userInput = sc.nextLine().toLowerCase().trim();
+                    break;
             }
         }
     }
@@ -63,7 +63,17 @@ public class Main {
                 1 - Customer
                 2 - Banker
                 """);
-        String roleInput = sc.nextLine().trim();
+
+        Roles role = null;
+        while (role == null) {
+            String roleInput = sc.nextLine().trim();
+
+            switch (roleInput) {
+                case "1" -> role = Roles.CUSTOMER;
+                case "2" -> role = Roles.BANKER;
+                default -> System.out.println("Invalid role. Please select 1 or 2.");
+            }
+        }
         System.out.println("Enter ID: ");
         String id = sc.nextLine().trim();
         System.out.println("Enter you name: ");
@@ -71,8 +81,6 @@ public class Main {
         System.out.println("Enter Password: ");
         String password = sc.nextLine().trim();
 
-        //TODO idk what to do for invald input
-        Roles role = roleInput.equals("1") ? Roles.CUSTOMER : Roles.BANKER;
 
         try {
             AuthService.signup(id, name, password, role);

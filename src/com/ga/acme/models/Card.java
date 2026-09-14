@@ -10,6 +10,7 @@ import java.util.UUID;
 public abstract class Card implements ICard {
     private String id;
     private String accountId;
+    private CardType cardType;
     private double withdrawLimitPerDay;
     private double transferLimitPerDay;
     private double depositLimitPerDay;
@@ -22,9 +23,10 @@ public abstract class Card implements ICard {
     private double dailyDepositedOwnAccount;
     private LocalDate lastTransactionDate;
 
-    public Card(String accountId) {
+    public Card(String accountId, CardType type) {
         this.id = UUID.randomUUID().toString().substring(0, 8);
         this.accountId = accountId;
+        this.cardType = type;
     }
 
     public static ICard mapToCardObject(Map<String, String> values) {
@@ -34,9 +36,9 @@ public abstract class Card implements ICard {
 
         if (type.equalsIgnoreCase(CardType.MASTERCARD.toString())) {
             card = new Mastercard(accountId);
-        } else if (type.equalsIgnoreCase(CardType.MASTERCARD_PLATINUM.toString())) {
+        } else if (type.equalsIgnoreCase(CardType.MASTERCARD_PLATINUM.getDisplayName())) {
             card = new MastercardPlatinum(accountId);
-        } else if (type.equalsIgnoreCase(CardType.MASTERCARD_TITANIUM.toString())) {
+        } else if (type.equalsIgnoreCase(CardType.MASTERCARD_TITANIUM.getDisplayName())) {
             card = new MastercardTitanium(accountId);
         }
         card.setId(values.get("id"));
@@ -54,6 +56,14 @@ public abstract class Card implements ICard {
         }
 
         return card;
+    }
+
+    public CardType getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
     }
 
     public String getId() {
@@ -164,7 +174,7 @@ public abstract class Card implements ICard {
     public String toString() {
         return "id=" + id + ";"
                 + "accountId=" + accountId + ";"
-                + "type=" + getClass().getSimpleName().toUpperCase() + ";"
+                + "type=" + cardType.getDisplayName() + ";"
                 + "dailyWithdrawn=" + dailyWithdrawn + ";"
                 + "dailyDeposited=" + dailyDeposited + ";"
                 + "dailyTransferred=" + dailyTransferred + ";"

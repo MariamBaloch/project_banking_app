@@ -1,5 +1,7 @@
 package com.ga.acme.interfaces;
 
+import com.ga.acme.enums.CardType;
+
 import java.time.LocalDate;
 
 public interface ICard {
@@ -54,5 +56,9 @@ public interface ICard {
     double getDailyTransferredOwnAccount();
 
     void setDailyTransferredOwnAccount(double dailyTransferredOwnAccount);
+
+    CardType getCardType();
+
+    void setCardType(CardType cardType);
 
 }
