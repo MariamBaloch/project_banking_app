@@ -122,13 +122,13 @@ public class Main {
         System.out.println("Would you like to add Mastercard for this account? yes | no");
         Boolean mastercard = sc.nextLine().trim().equals("yes");
         System.out.println("Would you like to add Mastercard Platinum for this account? yes | no");
-        Boolean mastercardPlantinum = sc.nextLine().trim().equals("yes");
+        Boolean mastercardPlatinum = sc.nextLine().trim().equals("yes");
         System.out.println("Would you like to add Mastercard Titanium for this account? yes | no");
-        Boolean mastercardTitanuium = sc.nextLine().trim().equals("yes");
+        Boolean mastercardTitanium = sc.nextLine().trim().equals("yes");
 
         //TODO idk what to do for invald input
         AccountType accountType = accountTypeInput.equals("1") ? AccountType.CHECKINGACCOUNT : AccountType.SAVINGSACCOUNT;
-        AccountService.addAccount(user.getId(), accountType, mastercard, mastercardPlantinum, mastercardTitanuium);
+        AccountService.addAccount(user.getId(), accountType, mastercard, mastercardPlatinum, mastercardTitanium);
     }
 
     private record LoginScenarioReturn(IUser user, String userInput) {
