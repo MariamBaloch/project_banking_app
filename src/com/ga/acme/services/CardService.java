@@ -1,4 +1,4 @@
-package com.ga.acme.controllers;
+package com.ga.acme.services;
 
 import com.ga.acme.enums.CardType;
 import com.ga.acme.enums.FilePath;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static com.ga.acme.util.FileHandler.getDataFromFile;
 
-public class Card {
+public class CardService {
     protected static ICard addCard(Boolean flag, String accountId, CardType cardType) {
         if (!flag) {
             return null;

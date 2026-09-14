@@ -1,4 +1,4 @@
-package com.ga.acme.controllers;
+package com.ga.acme.services;
 
 import com.ga.acme.enums.AccountType;
 import com.ga.acme.enums.CardType;
@@ -14,14 +14,14 @@ import com.ga.acme.util.FileHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.ga.acme.controllers.Card.addCard;
-import static com.ga.acme.controllers.Card.getCardById;
-import static com.ga.acme.controllers.Transaction.initialChecks;
+import static com.ga.acme.services.CardService.addCard;
+import static com.ga.acme.services.CardService.getCardById;
+import static com.ga.acme.services.TransactionService.initialChecks;
 import static com.ga.acme.util.FileHandler.getDataFromFile;
 
-public class Account {
+public class AccountService {
     public static void addAccount(String userId, AccountType type, Boolean mastercard, Boolean mastercardPlatinum, Boolean mastercardTitanium) {
-        IUser user = Auth.getUserById(userId);
+        IUser user = AuthService.getUserById(userId);
         IAccount acc = null;
 
         try {
@@ -52,10 +52,9 @@ public class Account {
 
             FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
             FileHandler.writeToFile(FilePath.ACCOUNTS.getPath(), acc.toString());
+            System.out.println("Successfully added " + type.getDisplayName() + " for user " + user.getName());
 
-        } catch (
-                AccountTypeNotSupportedException |
-                AccountAlreadyExistsException e) {
+        } catch (AccountTypeNotSupportedException | AccountAlreadyExistsException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -98,7 +97,7 @@ public class Account {
     }
 
     protected static VerifiedAccountResult getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
-        IUser user = Auth.getUserById(userId);
+        IUser user = AuthService.getUserById(userId);
         if (user == null) return null;
         try {
             initialChecks(user, accountType, cardType);

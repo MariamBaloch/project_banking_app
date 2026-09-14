@@ -2,3 +2,5 @@ id=ab9dcc86;balance=20801.0;userId=1;type=SavingsAccount;mastercardId=5c2f1bc2;m
 id=944db7b8;balance=113100.0;userId=2;type=SavingsAccount;mastercardId=3b45a2f8;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false
 id=08af0136;balance=21020.0;userId=1;type=CheckingAccount;mastercardId=1e051033;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false
 id=b42a23ec;balance=1030.0;userId=2;type=CheckingAccount;mastercardId=5e37fc26;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false
+
+id=219a1c57;balance=0.0;userId=3;type=CheckingAccount;mastercardId=ed1679b2;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false

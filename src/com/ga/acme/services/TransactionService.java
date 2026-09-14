@@ -1,4 +1,4 @@
-package com.ga.acme.controllers;
+package com.ga.acme.services;
 
 import com.ga.acme.enums.*;
 import com.ga.acme.exceptions.*;
@@ -19,11 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ga.acme.controllers.Account.getVerifiedAccount;
-import static com.ga.acme.controllers.Card.getCardByTypeForAccount;
+import static com.ga.acme.services.AccountService.getVerifiedAccount;
+import static com.ga.acme.services.CardService.getCardByTypeForAccount;
 import static com.ga.acme.util.FileHandler.getDataFromFile;
 
-public class Transaction {
+public class TransactionService {
 
     public static final int OVERDRAFT_LIMIT = 2;
     public static final double OVERDRAFT_AMOUNT = 35;
@@ -59,7 +59,7 @@ public class Transaction {
     }
 
     public static void withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
-        Account.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, cardType);
+        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, cardType);
         if (verifiedAccountResult == null) {
             return;
         }
@@ -118,7 +118,7 @@ public class Transaction {
     }
 
     public static void resolveOverdraft(String userId, double paymentAmount, AccountType accountType) {
-        Account.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, null);
+        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, null);
         if (verifiedAccountResult == null) {
             return;
         }
@@ -169,7 +169,7 @@ public class Transaction {
     }
 
     public static void transfer(String userId, double amount, AccountType fromAccountType, CardType cardType, String toUserId, AccountType toAccountType, Boolean depositToAnotherAccount) {
-        Account.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, fromAccountType, cardType);
+        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, fromAccountType, cardType);
         if (verifiedAccountResult == null) {
             return;
         }
@@ -186,7 +186,7 @@ public class Transaction {
                 throw new IllegalArgumentException("Transferring to same account type for same user not allowed");
             }
 
-            IUser toUser = Auth.getUserById(toUserId);
+            IUser toUser = AuthService.getUserById(toUserId);
             IAccount toAccount = AccountType.CHECKINGACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
 
             if (toAccount == null) {
@@ -254,7 +254,7 @@ public class Transaction {
     }
 
     public static void deposit(String userId, double amount, AccountType accountType, CardType cardType) {
-        Account.VerifiedAccountResult verifiedAccount = getVerifiedAccount(userId, accountType, cardType);
+        AccountService.VerifiedAccountResult verifiedAccount = getVerifiedAccount(userId, accountType, cardType);
         if (verifiedAccount == null) {
             return;
         }
@@ -312,7 +312,7 @@ public class Transaction {
     }
 
     public static void printUserAccountStatement(String userId, AccountType accountType) {
-        IUser user = Auth.getUserById(userId);
+        IUser user = AuthService.getUserById(userId);
         HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
         IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
         System.out.print("--------------------------------------ACME BANK ACCOUNT STATEMENT--------------------------------------\n\n");
@@ -331,7 +331,7 @@ public class Transaction {
     }
 
     public static void printFilteredTransactions(String userId, DateFilters dateFilter) {
-        IUser user = Auth.getUserById(userId);
+        IUser user = AuthService.getUserById(userId);
         HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
         LocalDateTime today = LocalDateTime.now();
 
