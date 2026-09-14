@@ -1,12 +1,3 @@
-id=5c2f1bc2;accountId=ab9dcc86;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=13000.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=2026-09-14
-id=3b45a2f8;accountId=944db7b8;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=1e051033;accountId=08af0136;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=5e37fc26;accountId=b42a23ec;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
 
-id=914976d2;accountId=9c193c42;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=ed1679b2;accountId=219a1c57;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=6b810883;accountId=0e79beb9;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=09fcebde;accountId=0e79beb9;type=Mastercard Platinum;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=f84f588a;accountId=5f9fb912;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=ce3af4c9;accountId=5f9fb912;type=Mastercard Platinum;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
-id=48c07d38;accountId=a9daa596;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
+id=7a6355b2;accountId=0cfdfd91;type=Mastercard Platinum;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
+id=7324f424;accountId=ea057c7b;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null

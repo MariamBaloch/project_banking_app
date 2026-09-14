@@ -126,17 +126,36 @@ public class Main {
                 1 - Checking Account
                 2 - Savings Account
                 """);
-        String accountTypeInput = sc.nextLine().trim();
-        System.out.println("Would you like to add Mastercard for this account? yes | no");
-        Boolean mastercard = sc.nextLine().trim().equals("yes");
-        System.out.println("Would you like to add Mastercard Platinum for this account? yes | no");
-        Boolean mastercardPlatinum = sc.nextLine().trim().equals("yes");
-        System.out.println("Would you like to add Mastercard Titanium for this account? yes | no");
-        Boolean mastercardTitanium = sc.nextLine().trim().equals("yes");
 
-        //TODO idk what to do for invald input
-        AccountType accountType = accountTypeInput.equals("1") ? AccountType.CHECKING_ACCOUNT : AccountType.SAVINGS_ACCOUNT;
+        AccountType accountType = null;
+        while (accountType == null) {
+            String accountTypeInput = sc.nextLine().trim();
+            switch (accountTypeInput) {
+                case "1" -> accountType = AccountType.CHECKING_ACCOUNT;
+                case "2" -> accountType = AccountType.SAVINGS_ACCOUNT;
+                default -> System.out.println("Invalid input. Please select 1 or 2.");
+            }
+        }
+        System.out.println("Would you like to add Mastercard for this account? yes | no");
+        Boolean mastercard = getYesNoInput(sc);
+        System.out.println("Would you like to add Mastercard Platinum for this account? yes | no");
+        Boolean mastercardPlatinum = getYesNoInput(sc);
+        System.out.println("Would you like to add Mastercard Titanium for this account? yes | no");
+        Boolean mastercardTitanium = getYesNoInput(sc);
         AccountService.addAccount(user.getId(), accountType, mastercard, mastercardPlatinum, mastercardTitanium);
+    }
+
+    private static Boolean getYesNoInput(Scanner sc) {
+        while (true) {
+            String input = sc.nextLine().trim().toLowerCase();
+            if (input.equals("yes")) {
+                return true;
+            }
+            if (input.equals("no")) {
+                return false;
+            }
+            System.out.println("Invalid input. Please enter yes or no.");
+        }
     }
 
     private record LoginScenarioReturn(IUser user, String userInput) {
