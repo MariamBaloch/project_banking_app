@@ -1,8 +1,8 @@
 package com.ga.acme.enums;
 
 public enum AccountType {
-    SAVINGSACCOUNT("Savings Account"),
-    CHECKINGACCOUNT("Checking Account");
+    SAVINGS_ACCOUNT("Savings Account"),
+    CHECKING_ACCOUNT("Checking Account");
 
     private final String displayName;
 

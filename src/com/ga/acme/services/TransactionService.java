@@ -27,22 +27,22 @@ public class TransactionService {
         if (!user.getIsLoggedIn()) {
             throw new AccountNotLoggedInException();
         }
-        if (accountType != AccountType.CHECKINGACCOUNT && accountType != AccountType.SAVINGSACCOUNT) {
+        if (accountType != AccountType.CHECKING_ACCOUNT && accountType != AccountType.SAVINGS_ACCOUNT) {
             throw new AccountTypeNotSupportedException();
         }
 
-        IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
+        IAccount account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
 
         if (account == null) {
-            String outputAccountType = accountType == AccountType.SAVINGSACCOUNT ? "savings account" : "checking account";
+            String outputAccountType = accountType == AccountType.SAVINGS_ACCOUNT ? "savings account" : "checking account";
             throw new RecordNotFoundException("No " + outputAccountType + " found for user: " + user.getName());
         }
 
         if (cardType != null) {
             boolean isCardSupported = switch (cardType) {
                 case MASTERCARD -> account.getMastercard() != null;
-                case MASTERCARDPLATINUM -> account.getMastercardPlatinum() != null;
-                case MASTERCARDTITANIUM -> account.getMastercardTitanium() != null;
+                case MASTERCARD_PLATINUM -> account.getMastercardPlatinum() != null;
+                case MASTERCARD_TITANIUM -> account.getMastercardTitanium() != null;
             };
 
             if (!isCardSupported) {
@@ -181,10 +181,10 @@ public class TransactionService {
             }
 
             IUser toUser = AuthService.getUserById(toUserId);
-            IAccount toAccount = AccountType.CHECKINGACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
+            IAccount toAccount = AccountType.CHECKING_ACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
 
             if (toAccount == null) {
-                String outputAccountType = toAccountType == AccountType.SAVINGSACCOUNT ? AccountType.SAVINGSACCOUNT.getDisplayName() : AccountType.CHECKINGACCOUNT.getDisplayName();
+                String outputAccountType = toAccountType == AccountType.SAVINGS_ACCOUNT ? AccountType.SAVINGS_ACCOUNT.getDisplayName() : AccountType.CHECKING_ACCOUNT.getDisplayName();
                 throw new RecordNotFoundException("No " + outputAccountType + " found for user: " + toUser.getName());
             }
 

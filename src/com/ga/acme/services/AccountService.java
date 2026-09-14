@@ -25,7 +25,7 @@ public class AccountService {
 
         try {
             switch (type) {
-                case CHECKINGACCOUNT:
+                case CHECKING_ACCOUNT:
                     if (user.getCheckingAccount() == null) {
                         acc = new CheckingAccount(user.getId(), null, null, null);
                         user.setCheckingAccount((CheckingAccount) acc);
@@ -33,7 +33,7 @@ public class AccountService {
                         throw new AccountAlreadyExistsException("Checking account for this user already exists");
                     }
                     break;
-                case SAVINGSACCOUNT:
+                case SAVINGS_ACCOUNT:
                     if (user.getSavingsAccount() == null) {
                         acc = new SavingsAccount(user.getId(), null, null, null);
                         user.setSavingsAccount((SavingsAccount) acc);
@@ -46,8 +46,8 @@ public class AccountService {
             }
 
             acc.setMastercard((Mastercard) addCard(mastercard, acc.getId(), CardType.MASTERCARD));
-            acc.setMastercardPlatinum((MastercardPlatinum) addCard(mastercardPlatinum, acc.getId(), CardType.MASTERCARDPLATINUM));
-            acc.setMastercardTitanium((MastercardTitanium) addCard(mastercardTitanium, acc.getId(), CardType.MASTERCARDTITANIUM));
+            acc.setMastercardPlatinum((MastercardPlatinum) addCard(mastercardPlatinum, acc.getId(), CardType.MASTERCARD_PLATINUM));
+            acc.setMastercardTitanium((MastercardTitanium) addCard(mastercardTitanium, acc.getId(), CardType.MASTERCARD_TITANIUM));
 
             FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
             FileHandler.writeToFile(FilePath.ACCOUNTS.getPath(), acc.toString());
@@ -84,7 +84,7 @@ public class AccountService {
             System.out.println(e.getMessage());
             return null;
         }
-        IAccount account = accountType == AccountType.CHECKINGACCOUNT
+        IAccount account = accountType == AccountType.CHECKING_ACCOUNT
                 ? user.getCheckingAccount()
                 : user.getSavingsAccount();
 

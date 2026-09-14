@@ -33,9 +33,9 @@ public abstract class Account implements IAccount {
     public static IAccount mapToAccountObject(Map<String, String> values) {
         IAccount acc = null;
 
-        if (values.get("type").equalsIgnoreCase(AccountType.CHECKINGACCOUNT.toString())) {
+        if (values.get("type").equalsIgnoreCase(AccountType.CHECKING_ACCOUNT.toString())) {
             acc = new CheckingAccount();
-        } else if (values.get("type").equalsIgnoreCase(AccountType.SAVINGSACCOUNT.toString())) {
+        } else if (values.get("type").equalsIgnoreCase(AccountType.SAVINGS_ACCOUNT.toString())) {
             acc = new SavingsAccount();
         }
         acc.setId(values.get("id"));

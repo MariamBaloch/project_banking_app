@@ -24,7 +24,7 @@ public class TransactionHistoryService {
     public static void printUserAccountStatement(String userId, AccountType accountType) {
         IUser user = AuthService.getUserById(userId);
         HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
-        IAccount account = accountType == AccountType.CHECKINGACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
+        IAccount account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
         System.out.print("--------------------------------------ACME BANK ACCOUNT STATEMENT--------------------------------------\n\n");
         System.out.printf("%-15s %-25s %-15s %-25s %-10s", "Customer ID", "Customer Name", "Account ID", "Account Type", "Total Account Balance\n");
         System.out.printf("%-40s %-40s %-10s", "-------------------------------", "-------------------------------", "-------------------------------\n");

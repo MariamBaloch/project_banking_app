@@ -2,8 +2,8 @@ package com.ga.acme.enums;
 
 public enum CardType {
     MASTERCARD("Mastercard"),
-    MASTERCARDPLATINUM("Mastercard Platinum"),
-    MASTERCARDTITANIUM("Mastercard Titanium");
+    MASTERCARD_PLATINUM("Mastercard Platinum"),
+    MASTERCARD_TITANIUM("Mastercard Titanium");
 
     private final String displayName;
 

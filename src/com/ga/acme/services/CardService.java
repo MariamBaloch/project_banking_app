@@ -23,8 +23,8 @@ public class CardService {
         }
         ICard card = switch (cardType) {
             case MASTERCARD -> new Mastercard(accountId);
-            case MASTERCARDPLATINUM -> new MastercardPlatinum(accountId);
-            case MASTERCARDTITANIUM -> new MastercardTitanium(accountId);
+            case MASTERCARD_PLATINUM -> new MastercardPlatinum(accountId);
+            case MASTERCARD_TITANIUM -> new MastercardTitanium(accountId);
         };
         FileHandler.writeToFile(FilePath.CARDS.getPath(), card.toString());
         return card;
@@ -50,8 +50,8 @@ public class CardService {
     protected static ICard getCardByTypeForAccount(IAccount account, CardType cardType) {
         return switch (cardType) {
             case MASTERCARD -> account.getMastercard();
-            case MASTERCARDPLATINUM -> account.getMastercardPlatinum();
-            case MASTERCARDTITANIUM -> account.getMastercardTitanium();
+            case MASTERCARD_PLATINUM -> account.getMastercardPlatinum();
+            case MASTERCARD_TITANIUM -> account.getMastercardTitanium();
         };
     }
 }

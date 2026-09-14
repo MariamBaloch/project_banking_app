@@ -34,9 +34,9 @@ public abstract class Card implements ICard {
 
         if (type.equalsIgnoreCase(CardType.MASTERCARD.toString())) {
             card = new Mastercard(accountId);
-        } else if (type.equalsIgnoreCase(CardType.MASTERCARDPLATINUM.toString())) {
+        } else if (type.equalsIgnoreCase(CardType.MASTERCARD_PLATINUM.toString())) {
             card = new MastercardPlatinum(accountId);
-        } else if (type.equalsIgnoreCase(CardType.MASTERCARDTITANIUM.toString())) {
+        } else if (type.equalsIgnoreCase(CardType.MASTERCARD_TITANIUM.toString())) {
             card = new MastercardTitanium(accountId);
         }
         card.setId(values.get("id"));

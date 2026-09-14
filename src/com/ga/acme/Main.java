@@ -127,7 +127,7 @@ public class Main {
         Boolean mastercardTitanium = sc.nextLine().trim().equals("yes");
 
         //TODO idk what to do for invald input
-        AccountType accountType = accountTypeInput.equals("1") ? AccountType.CHECKINGACCOUNT : AccountType.SAVINGSACCOUNT;
+        AccountType accountType = accountTypeInput.equals("1") ? AccountType.CHECKING_ACCOUNT : AccountType.SAVINGS_ACCOUNT;
         AccountService.addAccount(user.getId(), accountType, mastercard, mastercardPlatinum, mastercardTitanium);
     }
 
