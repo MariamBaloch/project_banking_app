@@ -44,13 +44,16 @@ public class Main {
                     handleSignUpScenario(sc);
                     break;
                 case "logout":
+                case "7":
                     user = AuthService.logout(user.getId());
                     break;
                 case "1":
                     handleAddAccountScenario(sc, user);
                     break;
                 default:
-                    System.out.println("Invalid input");
+                    if (!userInput.equals("exit")) {
+                        System.out.println("Invalid input");
+                    }
                     break;
             }
         }
@@ -117,6 +120,8 @@ public class Main {
                 5 - View Transaction History
                 6 - View Account Statement
                 7 - Logout
+                
+                Type 'exit' to shut down system
                 """);
     }
 
