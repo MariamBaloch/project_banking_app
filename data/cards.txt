@@ -1,3 +1,5 @@
 
 id=7a6355b2;accountId=0cfdfd91;type=Mastercard Platinum;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
 id=7324f424;accountId=ea057c7b;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
+id=8b868700;accountId=1bccb432;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null
+id=3ef4f3dc;accountId=1bccb432;type=Mastercard Platinum;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=null

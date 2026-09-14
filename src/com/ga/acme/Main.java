@@ -6,7 +6,7 @@ import com.ga.acme.enums.Roles;
 import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountLockedException;
 import com.ga.acme.exceptions.InvalidPasswordException;
-import com.ga.acme.interfaces.IUser;
+import com.ga.acme.models.User;
 import com.ga.acme.services.AccountService;
 import com.ga.acme.services.AuthService;
 
@@ -17,7 +17,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String userInput = "";
-        IUser user = AuthService.getLoggInUser();
+        User user = AuthService.getLoggInUser();
 
 
         if (user != null) {
@@ -99,7 +99,7 @@ public class Main {
         System.out.println("Enter your Password: ");
         String password = sc.nextLine().trim();
 
-        IUser user = null;
+        User user = null;
 
         try {
             user = AuthService.login(id, password);
@@ -125,7 +125,7 @@ public class Main {
                 """);
     }
 
-    private static void handleAddAccountScenario(Scanner sc, IUser user) {
+    private static void handleAddAccountScenario(Scanner sc, User user) {
         System.out.println("Which type of account would you like to add?");
         System.out.println("""
                 1 - Checking Account
@@ -163,7 +163,7 @@ public class Main {
         }
     }
 
-    private record LoginScenarioReturn(IUser user, String userInput) {
+    private record LoginScenarioReturn(User user, String userInput) {
     }
 
 

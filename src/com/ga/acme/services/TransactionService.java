@@ -6,9 +6,9 @@ import com.ga.acme.enums.FilePath;
 import com.ga.acme.enums.TransactionType;
 import com.ga.acme.exceptions.*;
 import com.ga.acme.interfaces.ICard;
-import com.ga.acme.interfaces.IUser;
 import com.ga.acme.models.Account;
 import com.ga.acme.models.TransactionRecord;
+import com.ga.acme.models.User;
 import com.ga.acme.util.FileHandler;
 
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ public class TransactionService {
     public static final double OVERDRAFT_AMOUNT = 35;
 
 
-    public static void initialChecks(IUser user, AccountType accountType, CardType cardType) throws AccountNotLoggedInException, AccountTypeNotSupportedException, RecordNotFoundException, CardNotSupportedException {
+    public static void initialChecks(User user, AccountType accountType, CardType cardType) throws AccountNotLoggedInException, AccountTypeNotSupportedException, RecordNotFoundException, CardNotSupportedException {
         if (!user.getIsLoggedIn()) {
             throw new AccountNotLoggedInException();
         }
@@ -58,7 +58,7 @@ public class TransactionService {
             return;
         }
         Account account = verifiedAccountResult.account();
-        IUser user = verifiedAccountResult.user();
+        User user = verifiedAccountResult.user();
 
         ICard card = getCardByTypeForAccount(account, cardType);
         try {
@@ -117,7 +117,7 @@ public class TransactionService {
             return;
         }
         Account account = verifiedAccountResult.account();
-        IUser user = verifiedAccountResult.user();
+        User user = verifiedAccountResult.user();
         try {
             double negativeBalance = account.getBalance() < 0 ? Math.abs(account.getBalance()) : 0;
             double totalDebt = negativeBalance + account.getOverdraftAmount();
@@ -168,7 +168,7 @@ public class TransactionService {
             return;
         }
         Account fromAccount = verifiedAccountResult.account();
-        IUser fromUser = verifiedAccountResult.user();
+        User fromUser = verifiedAccountResult.user();
 
         boolean ownTransfer = userId.equals(toUserId);
         try {
@@ -180,7 +180,7 @@ public class TransactionService {
                 throw new IllegalArgumentException("Transferring to same account type for same user not allowed");
             }
 
-            IUser toUser = AuthService.getUserById(toUserId);
+            User toUser = AuthService.getUserById(toUserId);
             Account toAccount = AccountType.CHECKING_ACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
 
             if (toAccount == null) {
@@ -253,7 +253,7 @@ public class TransactionService {
             return;
         }
         Account account = verifiedAccount.account();
-        IUser user = verifiedAccount.user();
+        User user = verifiedAccount.user();
 
         ICard card = getCardByTypeForAccount(account, cardType);
 
@@ -300,7 +300,7 @@ public class TransactionService {
         }
     }
 
-    private static void writeTransactionToFile(IUser user, TransactionRecord transactionRecord) {
+    private static void writeTransactionToFile(User user, TransactionRecord transactionRecord) {
         String transactionFileName = FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName();
         FileHandler.writeToFile(transactionFileName, transactionRecord);
     }

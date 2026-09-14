@@ -6,9 +6,6 @@ import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountLockedException;
 import com.ga.acme.exceptions.InvalidPasswordException;
 import com.ga.acme.exceptions.RecordNotFoundException;
-import com.ga.acme.interfaces.IUser;
-import com.ga.acme.models.Banker;
-import com.ga.acme.models.Customer;
 import com.ga.acme.models.User;
 import com.ga.acme.util.FileHandler;
 
@@ -37,8 +34,8 @@ public class AuthService {
     }
 
 
-    public static IUser getUserById(String id) {
-        IUser user = null;
+    public static User getUserById(String id) {
+        User user = null;
         HashMap<String, Map<String, String>> users = getDataFromFile(FilePath.USERS.getPath());
         try {
             if (users.containsKey(id)) {
@@ -70,20 +67,18 @@ public class AuthService {
         return MessageDigest.isEqual(storedHashBytes, enteredHashBytes);
     }
 
-    public static IUser signup(String id, String name, String password, Roles role) throws AccountAlreadyExistsException {
+    public static User signup(String id, String name, String password, Roles role) throws AccountAlreadyExistsException {
         HashMap<String, Map<String, String>> users = getDataFromFile(FilePath.USERS.getPath());
-        IUser user = null;
+        User user = new User();
         if (users.containsKey(id)) {
             throw new AccountAlreadyExistsException("Account already exists, try a different id");
         }
-        user = switch (role) {
-            case CUSTOMER -> new Customer();
-            case BANKER -> new Banker();
-            default -> null;
-        };
-        if (user == null) {
-            throw new IllegalArgumentException("Role not supported, enter either BANKER or CUSTOMER");
+        switch (role) {
+            case CUSTOMER -> user.setRole(Roles.CUSTOMER);
+            case BANKER -> user.setRole(Roles.BANKER);
+            default -> throw new IllegalArgumentException("Role not supported, enter either BANKER or CUSTOMER");
         }
+
         user.setId(id);
         user.setName(name);
         user.setHashedPassword(encryptPassword(password));
@@ -93,8 +88,8 @@ public class AuthService {
         return user;
     }
 
-    public static IUser login(String id, String password) throws AccountLockedException, InvalidPasswordException {
-        IUser user = getUserById(id);
+    public static User login(String id, String password) throws AccountLockedException, InvalidPasswordException {
+        User user = getUserById(id);
         if (user == null) {
             return null;
         }
@@ -136,16 +131,16 @@ public class AuthService {
 
     }
 
-    public static IUser logout(String id) {
-        IUser user = getUserById(id);
+    public static User logout(String id) {
+        User user = getUserById(id);
         user.setIsLoggedIn(false);
         FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
         System.out.println("Logged out successful");
         return null;
     }
 
-    public static IUser getLoggInUser() {
-        IUser user = null;
+    public static User getLoggInUser() {
+        User user = null;
         Map<String, Map<String, String>> users = getDataFromFile(FilePath.USERS.getPath());
 
         Map<String, String> values = users.values().stream()

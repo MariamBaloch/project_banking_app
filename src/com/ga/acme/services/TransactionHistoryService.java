@@ -3,8 +3,8 @@ package com.ga.acme.services;
 import com.ga.acme.enums.AccountType;
 import com.ga.acme.enums.DateFilters;
 import com.ga.acme.enums.FilePath;
-import com.ga.acme.interfaces.IUser;
 import com.ga.acme.models.Account;
+import com.ga.acme.models.User;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ import static com.ga.acme.util.FileHandler.getDataFromFile;
 
 public class TransactionHistoryService {
     public static void printUserAccountStatement(String userId, AccountType accountType) {
-        IUser user = AuthService.getUserById(userId);
+        User user = AuthService.getUserById(userId);
         HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
         Account account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
         System.out.print("--------------------------------------ACME BANK ACCOUNT STATEMENT--------------------------------------\n\n");
@@ -41,7 +41,7 @@ public class TransactionHistoryService {
     }
 
     public static void printFilteredTransactions(String userId, DateFilters dateFilter) {
-        IUser user = AuthService.getUserById(userId);
+        User user = AuthService.getUserById(userId);
         HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
         LocalDateTime today = LocalDateTime.now();
 

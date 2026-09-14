@@ -1,14 +1,13 @@
 package com.ga.acme.models;
 
 import com.ga.acme.enums.Roles;
-import com.ga.acme.interfaces.IUser;
 import com.ga.acme.services.AccountService;
 import com.ga.acme.services.AuthService;
 
 import java.time.LocalTime;
 import java.util.Map;
 
-public abstract class User implements IUser {
+public class User {
     Account savingsAccount;
     Account checkingAccount;
     private String id;
@@ -29,15 +28,15 @@ public abstract class User implements IUser {
         this.role = role;
     }
 
-    public static IUser mapToUserObject(Map<String, String> values) {
-        IUser user = null;
+    public static User mapToUserObject(Map<String, String> values) {
+        User user = new User();
 
-        if (values.get("role").equalsIgnoreCase("customer")) {
-            user = new Customer();
-        } else if (values.get("role").equalsIgnoreCase("banker")) {
-            user = new Banker();
-        }
         user.setId(values.get("id"));
+        if (values.get("role").equalsIgnoreCase("customer")) {
+            user.setRole(Roles.CUSTOMER);
+        } else if (values.get("role").equalsIgnoreCase("banker")) {
+            user.setRole(Roles.BANKER);
+        }
         user.setName(values.get("name"));
         user.setHashedPassword(values.get("hashedPassword"));
         user.setRole(Roles.valueOf(values.get("role")));
