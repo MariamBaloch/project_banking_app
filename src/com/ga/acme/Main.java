@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String userInput = "";
-        User user = AuthService.getLoggInUser();
+        User user = AuthService.getLoggedInUser();
 
         if (user != null) {
             printHeader("Welcome to ACME Banking System " + user.getName());

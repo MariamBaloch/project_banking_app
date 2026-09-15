@@ -121,7 +121,7 @@ public class AuthService {
         return null;
     }
 
-    public static User getLoggInUser() {
+    public static User getLoggedInUser() {
         User user = null;
         Map<String, Map<String, String>> users = getDataFromFile(FilePath.USERS.getPath());
 
