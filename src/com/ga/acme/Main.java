@@ -33,7 +33,7 @@ public class Main {
 
             switch (userInput) {
                 case "login":
-                    LoginScenario.LoginScenarioReturn loginScenarioReturn = LoginScenario.handle(sc, userInput);
+                    LoginScenario.ReturnType loginScenarioReturn = LoginScenario.handle(sc, userInput);
                     user = loginScenarioReturn.user();
                     userInput = loginScenarioReturn.userInput();
                     break;
@@ -54,7 +54,7 @@ public class Main {
                     break;
                 case "4":
                 case "transfer":
-                    // handle transfer scenario
+                    TransferScenario.handle(sc, user);
                     break;
                 case "5":
                 case "resolveoverdraft":

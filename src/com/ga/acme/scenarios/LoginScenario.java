@@ -8,7 +8,7 @@ import com.ga.acme.services.AuthService;
 import java.util.Scanner;
 
 public class LoginScenario {
-    public static LoginScenarioReturn handle(Scanner sc, String userInput) {
+    public static ReturnType handle(Scanner sc, String userInput) {
         System.out.println("Enter your ID: ");
         String id = sc.nextLine().trim();
 
@@ -23,9 +23,9 @@ public class LoginScenario {
             System.out.println(e.getMessage());
             userInput = "login";
         }
-        return new LoginScenarioReturn(user, userInput);
+        return new ReturnType(user, userInput);
     }
 
-    public record LoginScenarioReturn(User user, String userInput) {
+    public record ReturnType(User user, String userInput) {
     }
 }

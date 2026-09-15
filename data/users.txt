@@ -1,8 +1,8 @@
 
-id=1;name=mawwy;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=ea057c7b;savingId=0cfdfd91
+id=1;name=mawwy;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=true;checkingId=ea057c7b;savingId=0cfdfd91
 id=2;name=maww;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=BANKER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=1bccb432;savingId=null
 id=3;name=maww;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=1bccb432;savingId=null
 
-id=6;name=test;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=true;checkingId=77ee0633;savingId=null
+id=6;name=test;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=77ee0633;savingId=null
 
 id=10;name=potato;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=null;savingId=null

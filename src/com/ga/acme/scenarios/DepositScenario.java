@@ -18,13 +18,14 @@ public class DepositScenario {
                 2 - Another Customer's account
                 """);
         Boolean ownAccountDeposit = convertResponseToBoolean(sc, List.of("1", "2"));
-        String depositPrompt = ownAccountDeposit ? "Which account would you like to deposit to?" : "Which account would you like to make the deposit from?";
-        System.out.println(depositPrompt);
-        AccountType accountType = null;
+
         try {
-            accountType = getAccountTypeInput(sc, user, false);
+            System.out.println(ownAccountDeposit ? "Which account would you like to deposit to?" : "Which account would you like to make the deposit from?");
+            AccountType accountType = getAccountTypeInput(sc, user, false);
+
             System.out.println("Which card would you like to use for making the deposit?");
             CardType cardType = getCardTypeInput(sc, accountType.equals(AccountType.CHECKING_ACCOUNT) ? user.getCheckingAccount() : user.getSavingsAccount());
+
             System.out.println("Enter the amount you would like to deposit:");
             double amount = validDoubleInput(sc);
 
