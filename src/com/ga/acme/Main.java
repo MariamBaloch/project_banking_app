@@ -7,6 +7,7 @@ import com.ga.acme.services.AuthService;
 
 import java.util.Scanner;
 
+import static com.ga.acme.scenarios.Common.printHeader;
 import static com.ga.acme.scenarios.Common.printInitialMenu;
 
 public class Main {
@@ -16,12 +17,12 @@ public class Main {
         String userInput = "";
         User user = AuthService.getLoggInUser();
 
-
         if (user != null) {
-            System.out.println("Welcome to ACME Banking System " + user.getName());
+            printHeader("Welcome to ACME Banking System " + user.getName());
         } else {
-            System.out.println("Welcome to ACME Banking System");
+            printHeader("Welcome to ACME Banking System");
         }
+
         while (!userInput.equals("exit")) {
 
             if (user == null) {
@@ -62,7 +63,7 @@ public class Main {
                     break;
                 case "6":
                 case "transactionhistory":
-                    // handle history scenario
+                    TransactionHistoryScenario.handle(sc, user);
                     break;
                 case "7":
                 case "accountstatement":
@@ -75,6 +76,8 @@ public class Main {
                 case "9":
                 case "logout":
                     user = AuthService.logout(user.getId());
+                    break;
+                case "menu":
                     break;
                 default:
                     if (!userInput.equals("exit")) {

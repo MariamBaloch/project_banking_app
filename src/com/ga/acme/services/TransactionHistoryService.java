@@ -25,11 +25,16 @@ public class TransactionHistoryService {
         User user = UserService.getUserById(userId);
         HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
         Account account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
-        System.out.print("--------------------------------------ACME BANK ACCOUNT STATEMENT--------------------------------------\n\n");
-        System.out.printf("%-15s %-25s %-15s %-25s %-10s", "Customer ID", "Customer Name", "Account ID", "Account Type", "Total Account Balance\n");
-        System.out.printf("%-40s %-40s %-10s", "-------------------------------", "-------------------------------", "-------------------------------\n");
-        System.out.printf("%-15s %-25s %-15s %-25s %-10s", user.getId(), user.getName(), account.getId(), accountType.getDisplayName(), "$" + account.getBalance() + "\n\n");
-        System.out.println("----------------------------------------------TRANSACTIONS----------------------------------------------");
+
+        System.out.println("=================================================================");
+        System.out.println("                      ACME BANK ACCOUNT STATEMENT");
+        System.out.println("=================================================================");
+        System.out.printf("%s: %s%n", "Customer ID", user.getId());
+        System.out.printf("%s: %s%n", "Customer Name", user.getName());
+        System.out.printf("%s: %s%n", "Account ID", account.getId());
+        System.out.printf("%s: %s%n", "Account Type", accountType.getDisplayName());
+        System.out.printf("%s: $%.2f%n", "Total Account Balance", account.getBalance());
+        System.out.println("=================================================================");
 
         Map<String, Map<String, String>> filteredTransactions = transactions.entrySet().stream()
                 .filter(outerEntry -> accountType.getDisplayName().equals(outerEntry.getValue().get("accountType")))
@@ -44,15 +49,19 @@ public class TransactionHistoryService {
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
+
+        System.out.println("TRANSACTIONS");
+        System.out.println("-----------------------------------------------------------------");
         printUserTransactions(filteredTransactions);
     }
 
     public static void printFilteredTransactions(String userId, DateFilters dateFilter) {
         User user = UserService.getUserById(userId);
         HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
-        LocalDateTime today = LocalDateTime.now();
 
-        System.out.println("----------------------------------------------TRANSACTIONS FOR " + dateFilter.getDisplayName().toUpperCase() + "----------------------------------------------");
+        System.out.println("=================================================================");
+        System.out.println("                 TRANSACTIONS FOR " + dateFilter.getDisplayName().toUpperCase());
+        System.out.println("=================================================================");
 
         Map<String, Map<String, String>> filteredTransactions = transactions.entrySet().stream()
                 .filter(outerEntry -> applyDateFilter(LocalDateTime.parse(outerEntry.getValue().get("transactionDate")), dateFilter))
@@ -111,31 +120,42 @@ public class TransactionHistoryService {
 
                 result = (dateTime.isAfter(previousMonthStartDate) || dateTime.isEqual(previousMonthStartDate)) && dateTime.isBefore(startDateOfMonth);
                 break;
+            case ALL_HISTORY:
+                result = true;
+                break;
         }
         return result;
     }
 
 
     public static void printUserTransactions(Map<String, Map<String, String>> transactions) {
+        if (transactions == null || transactions.isEmpty()) {
+            System.out.println("No transactions found for this selection.");
+            return;
+        }
+
         for (Map.Entry<String, Map<String, String>> entry : transactions.entrySet()) {
-            System.out.print("[ Transaction ID" + ": " + entry.getKey() + ", ");
-            String formattedDate = LocalDateTime.parse(entry.getValue().get("transactionDate")).format(DateTimeFormatter.ofPattern("dd-MMMM-yyyy HH:mm:ss"));
-            System.out.print("Transaction Date" + ": " + formattedDate + ", ");
-            System.out.print("Transaction Type" + ": " + entry.getValue().get("transactionType") + ", ");
-            System.out.print("Account Type" + ": " + entry.getValue().get("accountType") + ", ");
-            System.out.print("Card Used" + ": " + entry.getValue().get("cardType") + ", ");
+            String formattedDate = LocalDateTime.parse(entry.getValue().get("transactionDate"))
+                    .format(DateTimeFormatter.ofPattern("dd-MMMM-yyyy HH:mm:ss"));
+            String overdraftAmount = entry.getValue().get("overdraftAmount").equals("null") ? "0.00" : entry.getValue().get("overdraftAmount");
             String toUser = entry.getValue().get("toUser");
             String toAccount = entry.getValue().get("toAccountType");
+
+            System.out.println("--------------------------------------------------------------");
+            System.out.printf("Transaction ID   : %s%n", entry.getKey());
+            System.out.printf("Date             : %s%n", formattedDate);
+            System.out.printf("Type             : %s%n", entry.getValue().get("transactionType"));
+            System.out.printf("Account Type     : %s%n", entry.getValue().get("accountType"));
+            System.out.printf("Card Used        : %s%n", entry.getValue().get("cardType"));
             if (!toUser.equals("null") && !toAccount.equals("null")) {
-                System.out.print("To User" + ": " + toUser + ", ");
-                System.out.print("To Account Type" + ": " + toAccount + ", ");
+                System.out.printf("To User          : %s%n", toUser);
+                System.out.printf("To Account Type  : %s%n", toAccount);
             }
-            System.out.print("Balance Before" + ": $" + entry.getValue().get("balanceBefore") + ", ");
-            System.out.print("Transaction Amount" + ": $" + entry.getValue().get("transactionAmount") + ", ");
-            System.out.print("Balance After" + ": $" + entry.getValue().get("balanceAfter") + ", ");
-            String overdraftAmount = entry.getValue().get("overdraftAmount").equals("null") ? "0.00" : entry.getValue().get("overdraftAmount");
-            System.out.println("Overdraft Amount" + ": $" + overdraftAmount + " ]");
-            System.out.println("-----------------------------------------------------------------");
+            System.out.printf("Balance Before   : $%.2f%n", Double.parseDouble(entry.getValue().get("balanceBefore")));
+            System.out.printf("Transaction Amt  : $%.2f%n", Double.parseDouble(entry.getValue().get("transactionAmount")));
+            System.out.printf("Balance After    : $%.2f%n", Double.parseDouble(entry.getValue().get("balanceAfter")));
+            System.out.printf("Overdraft Amount : $%.2f%n", Double.parseDouble(overdraftAmount));
         }
+        System.out.println("=================================================================");
     }
 }

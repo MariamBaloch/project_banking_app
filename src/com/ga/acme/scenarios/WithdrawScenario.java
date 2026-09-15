@@ -11,6 +11,7 @@ import static com.ga.acme.scenarios.Common.*;
 
 public class WithdrawScenario {
     public static void handle(Scanner sc, User user) {
+        Common.printHeader("WITHDRAW");
         try {
             System.out.println("Which account would you like to withdraw from?");
             AccountType accountType = getAccountTypeInput(sc, user, false);
@@ -21,6 +22,9 @@ public class WithdrawScenario {
 
             TransactionService.withdraw(user.getId(), amount, accountType, cardType);
         } catch (RuntimeException e) {
+            if ("RETURN_TO_MENU".equals(e.getMessage())) {
+                return;
+            }
             System.out.println(e.getMessage());
         }
     }

@@ -77,7 +77,6 @@ public class UserService {
                 }));
     }
 
-}
     public static void printUserProfile(User user) {
         System.out.printf("%-22s %s%n", "Customer ID:", user.getId());
         System.out.printf("%-22s %s%n", "Customer Name:", user.getName());
