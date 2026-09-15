@@ -66,7 +66,7 @@ public class Main {
                     break;
                 case "7":
                 case "accountstatement":
-                    // handle accstatement scenario
+                    AccountStatementScenario.handle(sc, user);
                     break;
                 case "8":
                 case "logout":

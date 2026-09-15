@@ -33,9 +33,16 @@ public class TransactionHistoryService {
 
         Map<String, Map<String, String>> filteredTransactions = transactions.entrySet().stream()
                 .filter(outerEntry -> accountType.getDisplayName().equals(outerEntry.getValue().get("accountType")))
+                .sorted((e1, e2) -> {
+                    LocalDateTime date1 = LocalDateTime.parse(e1.getValue().get("transactionDate"));
+                    LocalDateTime date2 = LocalDateTime.parse(e2.getValue().get("transactionDate"));
+                    return date1.compareTo(date2);
+                })
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        Map.Entry::getValue
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
                 ));
         printUserTransactions(filteredTransactions);
     }
@@ -119,14 +126,14 @@ public class TransactionHistoryService {
             System.out.print("Card Used" + ": " + entry.getValue().get("cardType") + ", ");
             String toUser = entry.getValue().get("toUser");
             String toAccount = entry.getValue().get("toAccountType");
-            if (toUser != null && toAccount != null) {
+            if (!toUser.equals("null") && !toAccount.equals("null")) {
                 System.out.print("To User" + ": " + toUser + ", ");
                 System.out.print("To Account Type" + ": " + toAccount + ", ");
             }
             System.out.print("Balance Before" + ": $" + entry.getValue().get("balanceBefore") + ", ");
             System.out.print("Transaction Amount" + ": $" + entry.getValue().get("transactionAmount") + ", ");
             System.out.print("Balance After" + ": $" + entry.getValue().get("balanceAfter") + ", ");
-            String overdraftAmount = entry.getValue().get("overdraftAmount").equals("null") ? "0.00$" : entry.getValue().get("overdraftAmount");
+            String overdraftAmount = entry.getValue().get("overdraftAmount").equals("null") ? "0.00" : entry.getValue().get("overdraftAmount");
             System.out.println("Overdraft Amount" + ": $" + overdraftAmount + " ]");
             System.out.println("-----------------------------------------------------------------");
         }

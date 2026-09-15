@@ -1,0 +1,4 @@
+
+id=266632b3;transactionType=Deposit to own account;accountType=Checking Account;cardType=Mastercard;balanceBefore=470.0;balanceAfter=670.0;transactionAmount=200.0;toUser=null;toAccountType=null;overdraftAmount=null;transactionDate=2026-09-15T16:41:06.480650200
+id=392bf2c8;transactionType=Deposit to another account;accountType=Checking Account;cardType=Mastercard Platinum;balanceBefore=670.0;balanceAfter=570.0;transactionAmount=100.0;toUser=6-test;toAccountType=Checking Account;overdraftAmount=null;transactionDate=2026-09-15T16:41:26.832206600
+id=b9187063;transactionType=Withdrawal;accountType=Checking Account;cardType=Mastercard Platinum;balanceBefore=570.0;balanceAfter=370.0;transactionAmount=200.0;toUser=null;toAccountType=null;overdraftAmount=0.0;transactionDate=2026-09-15T17:12:34.753417800

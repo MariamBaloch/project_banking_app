@@ -1,0 +1,5 @@
+
+id=75d28026;transactionType=Deposit to own account;accountType=Checking Account;cardType=Mastercard;balanceBefore=0.0;balanceAfter=1000.0;transactionAmount=1000.0;toUser=null;toAccountType=null;overdraftAmount=null;transactionDate=2026-09-15T17:38:34.093582300
+id=2833f7b6;transactionType=Transfer to own account;accountType=Checking Account;cardType=Mastercard;balanceBefore=1000.0;balanceAfter=900.0;transactionAmount=100.0;toUser=null;toAccountType=null;overdraftAmount=null;transactionDate=2026-09-15T17:39:28.841425400
+id=a429843d;transactionType=Transfer to another account;accountType=Checking Account;cardType=Mastercard;balanceBefore=900.0;balanceAfter=800.0;transactionAmount=100.0;toUser=6-test;toAccountType=Checking Account;overdraftAmount=null;transactionDate=2026-09-15T17:40:37.506729200
+id=a429845d;transactionType=Transfer to another account;accountType=Checking Account;cardType=Mastercard;balanceBefore=900.0;balanceAfter=800.0;transactionAmount=100.0;toUser=6-test;toAccountType=Checking Account;overdraftAmount=null;transactionDate=2026-09-14T17:40:37.506729200
