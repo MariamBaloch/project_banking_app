@@ -10,7 +10,6 @@ money, and view their account balance. The system uses a command-line interface 
 ## Technologies used
 
 - Java
-- IntelliJ
 
 ## Trello board
 
