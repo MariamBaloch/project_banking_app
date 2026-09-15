@@ -24,8 +24,7 @@ public class DepositScenario {
         try {
             accountType = getAccountTypeInput(sc, user, false);
             System.out.println("Which card would you like to use for making the deposit?");
-            //TODO dont display unavailable cards
-            CardType cardType = getCardTypeInput(sc);
+            CardType cardType = getCardTypeInput(sc, accountType.equals(AccountType.CHECKING_ACCOUNT) ? user.getCheckingAccount() : user.getSavingsAccount());
             System.out.println("Enter the amount you would like to deposit:");
             double amount = validDoubleInput(sc);
 

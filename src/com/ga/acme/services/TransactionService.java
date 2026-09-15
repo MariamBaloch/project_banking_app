@@ -23,7 +23,7 @@ public class TransactionService {
     public static final double OVERDRAFT_AMOUNT = 35;
 
 
-    public static void initialChecks(User user, AccountType accountType, CardType cardType) throws AccountNotLoggedInException, AccountTypeNotSupportedException, RecordNotFoundException, CardNotSupportedException {
+    public static void initialChecks(User user, AccountType accountType, CardType cardType, boolean skipLockedCheck) throws AccountNotLoggedInException, AccountTypeNotSupportedException, RecordNotFoundException, CardNotSupportedException, AccountLockedException {
         if (!user.getIsLoggedIn()) {
             throw new AccountNotLoggedInException();
         }
@@ -36,6 +36,10 @@ public class TransactionService {
         if (account == null) {
             String outputAccountType = accountType == AccountType.SAVINGS_ACCOUNT ? "savings account" : "checking account";
             throw new RecordNotFoundException("No " + outputAccountType + " found for user: " + user.getName());
+        }
+
+        if (!skipLockedCheck && account.isLocked()) {
+            throw new AccountLockedException("Account is locked due to reaching overdraft limit. Pay off your negative balance of $" + Math.abs(account.getBalance()) + " and $" + account.getOverdraftAmount() + " overdraft fee to unlock.");
         }
 
         if (cardType != null) {
@@ -53,7 +57,7 @@ public class TransactionService {
     }
 
     public static void withdraw(String userId, double amount, AccountType accountType, CardType cardType) {
-        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, cardType);
+        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, cardType, false);
         if (verifiedAccountResult == null) {
             return;
         }
@@ -63,17 +67,12 @@ public class TransactionService {
         ICard card = getCardByTypeForAccount(account, cardType);
         try {
             if (account.getBalance() >= 0 && account.getBalance() - amount < -100) {
-                throw new InsufficientAmountException("You do not have enough balance for this transaction");
+                throw new InsufficientAmountException("You do not have enough balance for this transaction. Remaining balance: $" + account.getBalance() + ". Maximum overdraft limit is $100.");
             }
 
             handleDailyLimits(card, amount, card.getDailyWithdrawn(), card.getWithdrawLimitPerDay(), "Withdraw");
-            if (account.isLocked()) {
-                throw new AccountLockedException(
-                        "Account is locked due to reaching overdraft limit. Pay off your negative balance of $" + Math.abs(account.getBalance()) + " and $" + account.getOverdraftAmount() + " overdraft fee to unlock.");
-            }
             if (account.getBalance() < 0 && amount > 100) {
-                throw new WithdrawLimitException(
-                        "Negative balance, withdrawals are limited to $100. Please enter a lower amount.");
+                throw new WithdrawLimitException("Negative balance, withdrawals are limited to $100. Please enter a lower amount.");
             }
 
             TransactionRecord.Builder transactionBuilder = new TransactionRecord.Builder().
@@ -105,14 +104,19 @@ public class TransactionService {
 
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
             FileHandler.updateLineInFile(FilePath.CARDS.getPath(), card.getId(), card.toString());
-        } catch (
-                Exception e) {
+
+            System.out.println("Successfully withdrew $" + amount +
+                    " from your " + accountType.getDisplayName() +
+                    " using " + cardType.getDisplayName() +
+                    ".\nCurrent account balance: $" + account.getBalance() +
+                    "\nToday's remaining withdrawal limit for " + cardType.getDisplayName() + ": $" + (card.getWithdrawLimitPerDay() - card.getDailyWithdrawn()));
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     public static void resolveOverdraft(String userId, double paymentAmount, AccountType accountType) {
-        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, null);
+        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, accountType, null, true);
         if (verifiedAccountResult == null) {
             return;
         }
@@ -156,14 +160,13 @@ public class TransactionService {
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
             System.out.println("Overdraft resolved. Account unlocked. New balance: " + account.getBalance());
 
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public static void transfer(String userId, double amount, AccountType fromAccountType, CardType cardType, User toUser, AccountType toAccountType, Boolean depositToAnotherAccount) {
-        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, fromAccountType, cardType);
+    public static void transfer(String userId, double amount, AccountType fromAccountType, CardType cardType, User toUser, AccountType toAccountType, boolean depositToAnotherAccount) {
+        AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, fromAccountType, cardType, false);
         if (verifiedAccountResult == null) {
             return;
         }
@@ -173,7 +176,7 @@ public class TransactionService {
         boolean ownTransfer = userId.equals(toUser.getId());
         try {
             if (fromAccount.getBalance() < amount) {
-                throw new InsufficientAmountException("You do not have enough balance for this transaction");
+                throw new InsufficientAmountException("You do not have enough balance for this transaction. Remaining balance: $" + fromAccount.getBalance());
             }
 
             if (ownTransfer && toAccountType.equals(fromAccountType)) {
@@ -265,7 +268,7 @@ public class TransactionService {
     }
 
     public static void deposit(String userId, double amount, AccountType accountType, CardType cardType) {
-        AccountService.VerifiedAccountResult verifiedAccount = getVerifiedAccount(userId, accountType, cardType);
+        AccountService.VerifiedAccountResult verifiedAccount = getVerifiedAccount(userId, accountType, cardType, false);
         if (verifiedAccount == null) {
             return;
         }

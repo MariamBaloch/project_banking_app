@@ -2,6 +2,7 @@ package com.ga.acme.scenarios;
 
 import com.ga.acme.enums.AccountType;
 import com.ga.acme.enums.CardType;
+import com.ga.acme.models.Account;
 import com.ga.acme.models.User;
 import com.ga.acme.services.UserService;
 
@@ -19,9 +20,10 @@ public class Common {
                 2 - Deposit money
                 3 - Withdraw money
                 4 - Transfer money
-                5 - View Transaction History
-                6 - View Account Statement
-                7 - Logout
+                5 - Resolve Overdraft
+                6 - View Transaction History
+                7 - View Account Statement
+                8 - Logout
                 
                 Type 'exit' to shut down system
                 """);
@@ -73,25 +75,42 @@ public class Common {
         }
     }
 
-    public static CardType getCardTypeInput(Scanner sc) {
-        System.out.println("""
-                1 - Mastercard
-                2 - Mastercard Platinum
-                3 - Mastercard Titanium
-                """);
+    public static CardType getCardTypeInput(Scanner sc, Account account) {
+        boolean hasMastercard = account.getMastercard() != null;
+        boolean hasMastercardPlatinum = account.getMastercardPlatinum() != null;
+        boolean hasMastercardTitanium = account.getMastercardTitanium() != null;
+
+        if (!hasMastercard && !hasMastercardPlatinum && !hasMastercardTitanium) {
+            throw new RuntimeException("No cards found for this account");
+        }
+
+        StringBuilder print = new StringBuilder();
+        StringBuilder invalidOutput = new StringBuilder("Invalid input. Please enter ");
+
+
+        if (hasMastercard) {
+            print.append("1 - Mastercard\n");
+            invalidOutput.append("1");
+        }
+        if (hasMastercardPlatinum) {
+            print.append("2 - Mastercard Platinum\n");
+            invalidOutput.append("or 2");
+        }
+        if (hasMastercardTitanium) {
+            print.append("3 - Mastercard Titanium\n");
+            invalidOutput.append("or 3");
+        }
+        System.out.println(print.toString());
         while (true) {
             String cardTypeInput = sc.nextLine().trim();
-            switch (cardTypeInput) {
-                case "1" -> {
-                    return CardType.MASTERCARD;
-                }
-                case "2" -> {
-                    return CardType.MASTERCARD_PLATINUM;
-                }
-                case "3" -> {
-                    return CardType.MASTERCARD_TITANIUM;
-                }
-                default -> System.out.println("Invalid input. Please select 1, 2 or 3.");
+            if (hasMastercard && cardTypeInput.equals("1")) {
+                return CardType.MASTERCARD;
+            } else if (hasMastercardPlatinum && cardTypeInput.equals("2")) {
+                return CardType.MASTERCARD_PLATINUM;
+            } else if (hasMastercardTitanium && cardTypeInput.equals("3")) {
+                return CardType.MASTERCARD_TITANIUM;
+            } else {
+                System.out.println(invalidOutput.toString());
             }
         }
     }

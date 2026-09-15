@@ -31,8 +31,6 @@ public class SignupScenario {
         String name = sc.nextLine().trim();
         System.out.println("Enter Password: ");
         String password = sc.nextLine().trim();
-
-
         try {
             AuthService.signup(id, name, password, role);
         } catch (AccountAlreadyExistsException e) {

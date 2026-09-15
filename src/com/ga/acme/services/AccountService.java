@@ -73,11 +73,11 @@ public class AccountService {
         return acc;
     }
 
-    protected static VerifiedAccountResult getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
+    protected static VerifiedAccountResult getVerifiedAccount(String userId, AccountType accountType, CardType cardType, boolean skipLockedCheck) {
         User user = UserService.getUserById(userId);
         if (user == null) return null;
         try {
-            initialChecks(user, accountType, cardType);
+                initialChecks(user, accountType, cardType, skipLockedCheck);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;

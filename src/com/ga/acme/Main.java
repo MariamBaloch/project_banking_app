@@ -2,10 +2,7 @@ package com.ga.acme;
 
 
 import com.ga.acme.models.User;
-import com.ga.acme.scenarios.AddAccountScenario;
-import com.ga.acme.scenarios.DepositScenario;
-import com.ga.acme.scenarios.LoginScenario;
-import com.ga.acme.scenarios.SignupScenario;
+import com.ga.acme.scenarios.*;
 import com.ga.acme.services.AuthService;
 
 import java.util.Scanner;
@@ -53,21 +50,25 @@ public class Main {
                     break;
                 case "3":
                 case "withdraw":
-                    // handle withdraw scenario
+                    WithdrawScenario.handle(sc, user);
                     break;
                 case "4":
                 case "transfer":
                     // handle transfer scenario
                     break;
                 case "5":
+                case "resolveoverdraft":
+                    ResolveOverdraftScenario.handle(sc, user);
+                    break;
+                case "6":
                 case "transactionhistory":
                     // handle history scenario
                     break;
-                case "6":
+                case "7":
                 case "accountstatement":
                     // handle accstatement scenario
                     break;
-                case "7":
+                case "8":
                 case "logout":
                     user = AuthService.logout(user.getId());
                     break;
