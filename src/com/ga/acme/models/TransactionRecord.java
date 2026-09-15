@@ -20,7 +20,7 @@ public class TransactionRecord {
     private CardType cardType;
     private LocalDateTime transactionDate;
 
-    public TransactionRecord(Builder builder) {
+    private TransactionRecord(Builder builder) {
         this.id = UUID.randomUUID().toString().substring(0, 8);
         this.transactionType = builder.transactionType;
         this.accountType = builder.accountType;
@@ -94,10 +94,6 @@ public class TransactionRecord {
         return overdraftAmount;
     }
 
-    public void setOverdraftAmount(double overdraftAmount) {
-        this.overdraftAmount = overdraftAmount;
-    }
-
     public void setOverdraftAmount(Double overdraftAmount) {
         this.overdraftAmount = overdraftAmount;
     }
@@ -118,6 +114,14 @@ public class TransactionRecord {
         this.cardType = cardType;
     }
 
+    public AccountType getToAccountType() {
+        return toAccountType;
+    }
+
+    public void setToAccountType(AccountType toAccountType) {
+        this.toAccountType = toAccountType;
+    }
+
     @Override
     public String toString() {
         String toAcc = toAccountType != null ? toAccountType.getDisplayName() : "null";
@@ -135,16 +139,7 @@ public class TransactionRecord {
                 + "transactionDate=" + transactionDate;
     }
 
-    public AccountType getToAccountType() {
-        return toAccountType;
-    }
-
-    public void setToAccountType(AccountType toAccountType) {
-        this.toAccountType = toAccountType;
-    }
-
     public static class Builder {
-        private String id;
         private TransactionType transactionType;
         private AccountType accountType;
         private double balanceBefore;
@@ -155,11 +150,6 @@ public class TransactionRecord {
         private Double overdraftAmount;
         private CardType cardType;
         private LocalDateTime transactionDate;
-
-        public Builder setId(String id) {
-            this.id = id;
-            return this;
-        }
 
         public Builder setTransactionType(TransactionType transactionType) {
             this.transactionType = transactionType;
