@@ -162,7 +162,7 @@ public class TransactionService {
         }
     }
 
-    public static void transfer(String userId, double amount, AccountType fromAccountType, CardType cardType, String toUserId, AccountType toAccountType, Boolean depositToAnotherAccount) {
+    public static void transfer(String userId, double amount, AccountType fromAccountType, CardType cardType, User toUser, AccountType toAccountType, Boolean depositToAnotherAccount) {
         AccountService.VerifiedAccountResult verifiedAccountResult = getVerifiedAccount(userId, fromAccountType, cardType);
         if (verifiedAccountResult == null) {
             return;
@@ -170,7 +170,7 @@ public class TransactionService {
         Account fromAccount = verifiedAccountResult.account();
         User fromUser = verifiedAccountResult.user();
 
-        boolean ownTransfer = userId.equals(toUserId);
+        boolean ownTransfer = userId.equals(toUser.getId());
         try {
             if (fromAccount.getBalance() < amount) {
                 throw new InsufficientAmountException("You do not have enough balance for this transaction");
@@ -180,7 +180,6 @@ public class TransactionService {
                 throw new IllegalArgumentException("Transferring to same account type for same user not allowed");
             }
 
-            User toUser = UserService.getUserById(toUserId);
             Account toAccount = AccountType.CHECKING_ACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
 
             if (toAccount == null) {
@@ -222,13 +221,28 @@ public class TransactionService {
 
             fromAccount.transferFunds(amount, toAccount);
 
+            String successMessage = null;
+
             if (ownTransfer) {
                 card.setDailyTransferredOwnAccount(card.getDailyTransferredOwnAccount() + amount);
+                successMessage = "Successfully transferred amount $" + amount + " from " + fromAccountType.getDisplayName() + " to " + toAccountType.getDisplayName() + " using " + cardType.getDisplayName() +
+                        "\nRemaining balance for " + fromAccountType.getDisplayName() + ": $" + fromAccount.getBalance() +
+                        "\nNew balance for " + toAccountType.getDisplayName() + ": $" + toAccount.getBalance() +
+                        "\nToday's remaining limit for transferring to your own account for " + cardType.getDisplayName() + ": $" + (limit - card.getDailyTransferredOwnAccount());
+
             } else if (depositToAnotherAccount) {
                 card.setDailyDeposited(card.getDailyDeposited() + amount);
+                successMessage = "Successfully deposited amount $" + amount + " from " + fromAccountType.getDisplayName() + " to user: " + toUser.getName() + "'s " + toAccountType.getDisplayName() + " using " + cardType.getDisplayName() +
+                        "\nRemaining balance for " + fromAccountType.getDisplayName() + ": $" + fromAccount.getBalance() +
+                        "\nToday's remaining limit for depositing to another account for " + cardType.getDisplayName() + ": $" + (limit - card.getDailyDeposited());
+
             } else {
                 card.setDailyTransferred(card.getDailyTransferred() + amount);
+                successMessage = "Successfully transferred amount $" + amount + " from " + fromAccountType.getDisplayName() + " to user: " + toUser.getName() + "'s " + toAccountType.getDisplayName() + " using " + cardType.getDisplayName() +
+                        "\nRemaining balance for " + fromAccountType.getDisplayName() + ": $" + fromAccount.getBalance() +
+                        "\nToday's remaining limit for transferring to another account for " + cardType.getDisplayName() + ": $" + (limit - card.getDailyTransferred());
             }
+
 
             TransactionRecord transactionRecord = transactionBuilder.
                     setAccountType(fromAccountType).
@@ -238,6 +252,9 @@ public class TransactionService {
                     setTransactionDate(LocalDateTime.now()).build();
 
             writeTransactionToFile(fromUser, transactionRecord);
+
+            System.out.println(successMessage);
+
 
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), fromAccount.getId(), fromAccount.toString());
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), toAccount.getId(), toAccount.toString());
@@ -258,14 +275,14 @@ public class TransactionService {
         ICard card = getCardByTypeForAccount(account, cardType);
 
         try {
-            handleDailyLimits(card, amount, card.getDailyDepositedOwnAccount(),
-                    card.getDepositLimitPerDayOwnAccount(), "Deposit");
+            double limit = card.getDepositLimitPerDayOwnAccount();
+            handleDailyLimits(card, amount, card.getDailyDepositedOwnAccount(), limit, "Deposit");
 
             TransactionRecord.Builder transactionBuilder = new TransactionRecord.Builder().
                     setBalanceBefore(account.getBalance());
 
             account.deposit(amount);
-            card.setDailyDeposited(card.getDailyDeposited() + amount);
+            card.setDailyDepositedOwnAccount(card.getDailyDepositedOwnAccount() + amount);
 
             TransactionRecord transactionRecord = transactionBuilder.
                     setTransactionType(TransactionType.DEPOSIT_TO_OWN_ACCOUNT).
@@ -279,8 +296,12 @@ public class TransactionService {
 
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
             FileHandler.updateLineInFile(FilePath.CARDS.getPath(), card.getId(), card.toString());
-            System.out.println("Successfully deposited $" + amount + " to your " + accountType.getDisplayName()
-                    + ". Current account balance $" + account.getBalance());
+
+            System.out.println("Successfully deposited $" + amount +
+                    " to your " + accountType.getDisplayName() +
+                    ".\nCurrent account balance $" + account.getBalance() +
+                    "\nToday's remaining limit for depositing using " + cardType.getDisplayName() + ": $" + (limit - card.getDailyDepositedOwnAccount()));
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -298,7 +319,7 @@ public class TransactionService {
             dailyAmount = 0;
         }
         if (dailyAmount + amount > limit) {
-            throw new DailyLimitExceededException(card.getClass().getSimpleName() + ": " + transactionType + " daily limit of $" + limit + " exceeded. Used: $" + dailyAmount + ", Requested: $" + amount + ", Remaining: $" + (limit - dailyAmount));
+            throw new DailyLimitExceededException(card.getCardType().getDisplayName() + ": " + transactionType + " daily limit of $" + limit + " exceeded. Used: $" + dailyAmount + ", Requested: $" + amount + ", Remaining: $" + (limit - dailyAmount));
         }
     }
 
