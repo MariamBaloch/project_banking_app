@@ -5,7 +5,6 @@ import com.ga.acme.enums.Roles;
 import com.ga.acme.exceptions.AccountAlreadyExistsException;
 import com.ga.acme.exceptions.AccountLockedException;
 import com.ga.acme.exceptions.InvalidPasswordException;
-import com.ga.acme.exceptions.RecordNotFoundException;
 import com.ga.acme.models.User;
 import com.ga.acme.util.FileHandler;
 
@@ -33,23 +32,6 @@ public class AuthService {
         return HexFormat.of().formatHex(hashBytes);
     }
 
-
-    public static User getUserById(String id) {
-        User user = null;
-        HashMap<String, Map<String, String>> users = getDataFromFile(FilePath.USERS.getPath());
-        try {
-            if (users.containsKey(id)) {
-                Map<String, String> values = users.get(id);
-                user = User.mapToUserObject(values);
-            } else {
-                throw new RecordNotFoundException("User with this id " + id + " does not exist");
-            }
-        } catch (RecordNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return user;
-    }
 
     public static boolean checkPassword(String userInputPassword, String storedPassword) {
         if (userInputPassword == null || storedPassword == null) {
@@ -89,7 +71,7 @@ public class AuthService {
     }
 
     public static User login(String id, String password) throws AccountLockedException, InvalidPasswordException {
-        User user = getUserById(id);
+        User user = UserService.getUserById(id);
         if (user == null) {
             return null;
         }
@@ -132,7 +114,7 @@ public class AuthService {
     }
 
     public static User logout(String id) {
-        User user = getUserById(id);
+        User user = UserService.getUserById(id);
         user.setIsLoggedIn(false);
         FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
         System.out.println("Logged out successful");

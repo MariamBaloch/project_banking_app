@@ -180,7 +180,7 @@ public class TransactionService {
                 throw new IllegalArgumentException("Transferring to same account type for same user not allowed");
             }
 
-            User toUser = AuthService.getUserById(toUserId);
+            User toUser = UserService.getUserById(toUserId);
             Account toAccount = AccountType.CHECKING_ACCOUNT.equals(toAccountType) ? toUser.getCheckingAccount() : toUser.getSavingsAccount();
 
             if (toAccount == null) {
@@ -279,6 +279,8 @@ public class TransactionService {
 
             FileHandler.updateLineInFile(FilePath.ACCOUNTS.getPath(), account.getId(), account.toString());
             FileHandler.updateLineInFile(FilePath.CARDS.getPath(), card.getId(), card.toString());
+            System.out.println("Successfully deposited $" + amount + " to your " + accountType.getDisplayName()
+                    + ". Current account balance $" + account.getBalance());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

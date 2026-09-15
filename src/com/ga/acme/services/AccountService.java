@@ -18,7 +18,7 @@ import static com.ga.acme.util.FileHandler.getDataFromFile;
 
 public class AccountService {
     public static void addAccount(String userId, AccountType type, Boolean mastercard, Boolean mastercardPlatinum, Boolean mastercardTitanium) {
-        User user = AuthService.getUserById(userId);
+        User user = UserService.getUserById(userId);
         Account acc = null;
 
         try {
@@ -74,7 +74,7 @@ public class AccountService {
     }
 
     protected static VerifiedAccountResult getVerifiedAccount(String userId, AccountType accountType, CardType cardType) {
-        User user = AuthService.getUserById(userId);
+        User user = UserService.getUserById(userId);
         if (user == null) return null;
         try {
             initialChecks(user, accountType, cardType);
