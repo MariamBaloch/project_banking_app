@@ -12,14 +12,15 @@ import static com.ga.acme.scenarios.Common.*;
 
 public class TransferScenario {
     public static void handle(Scanner sc, User user) {
-        System.out.println("Would you like to transfer to your own account or another customer's account?");
-        System.out.println("""
-                1 - Own Account
-                2 - Another Customer's account
-                """);
-        Boolean ownAccountTransfer = convertResponseToBoolean(sc, List.of("1", "2"));
-
+        Common.printHeader("TRANSFER");
         try {
+            System.out.println("Would you like to transfer to your own account or another customer's account?");
+            System.out.println("""
+                    1 - Own Account
+                    2 - Another Customer's account
+                    """);
+            Boolean ownAccountTransfer = convertResponseToBoolean(sc, List.of("1", "2"));
+
             System.out.println("Which account would you like to transfer from?");
             AccountType fromAccountType = getAccountTypeInput(sc, user, false);
 
@@ -41,6 +42,9 @@ public class TransferScenario {
                 TransactionService.transfer(user.getId(), amount, fromAccountType, cardType, toUser, toAccountType, false);
             }
         } catch (RuntimeException e) {
+            if ("RETURN_TO_MENU".equals(e.getMessage())) {
+                return;
+            }
             System.out.println(e.getMessage());
         }
     }

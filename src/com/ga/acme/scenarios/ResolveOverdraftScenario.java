@@ -10,6 +10,7 @@ import static com.ga.acme.scenarios.Common.*;
 
 public class ResolveOverdraftScenario {
     public static void handle(Scanner sc, User user) {
+        Common.printHeader("RESOLVE OVERDRAFT");
         try {
             System.out.println("Which account would you like to resolve overdraft for?");
             AccountType accountType = getAccountTypeInput(sc, user, false);
@@ -19,6 +20,9 @@ public class ResolveOverdraftScenario {
 
             TransactionService.resolveOverdraft(user.getId(), amount, accountType);
         } catch (RuntimeException e) {
+            if ("RETURN_TO_MENU".equals(e.getMessage())) {
+                return;
+            }
             System.out.println(e.getMessage());
         }
     }

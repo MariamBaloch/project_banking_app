@@ -6,13 +6,32 @@ import com.ga.acme.models.Account;
 import com.ga.acme.models.User;
 import com.ga.acme.services.UserService;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 import static com.ga.acme.services.UserService.printAllCustomerIDAndName;
 
 public class Common {
+    public static void printHeader(String title) {
+        int width = 70;
+        String line = "=".repeat(width);
+        System.out.println(line);
+        System.out.printf("%" + ((width - title.length()) / 2 + title.length()) + "s%n", title);
+        System.out.println(line);
+    }
+
+    public static boolean isMenuEscape(String input) {
+        return input.equalsIgnoreCase("menu");
+    }
+
+    public static String readInputWithMenuEscape(Scanner sc) {
+        String input = sc.nextLine().trim();
+        if (isMenuEscape(input)) {
+            throw new RuntimeException("RETURN_TO_MENU");
+        }
+        return input;
+    }
+
     public static void printInitialMenu() {
         System.out.println("\nPlease select an operation to perform:");
         System.out.println("""
@@ -23,15 +42,17 @@ public class Common {
                 5 - Resolve Overdraft
                 6 - View Transaction History
                 7 - View Account Statement
-                8 - Logout
+                8 - View User Profile
+                9 - Logout
                 
+                Type 'menu' at any prompt to return to the main menu
                 Type 'exit' to shut down system
                 """);
     }
 
     public static Boolean convertResponseToBoolean(Scanner sc, List<String> allowedInput) {
         while (true) {
-            String input = sc.nextLine().trim().toLowerCase();
+            String input = readInputWithMenuEscape(sc).toLowerCase();
             if (input.equals(allowedInput.get(0).toLowerCase())) {
                 return true;
             }
@@ -64,7 +85,7 @@ public class Common {
         }
         System.out.println(print.toString());
         while (true) {
-            String accountTypeInput = sc.nextLine().trim();
+            String accountTypeInput = readInputWithMenuEscape(sc);
             if ((userCheckingAccount || newAccount) && accountTypeInput.equals("1")) {
                 return AccountType.CHECKING_ACCOUNT;
             } else if ((userSavingAccount || newAccount) && accountTypeInput.equals("2")) {
@@ -102,7 +123,7 @@ public class Common {
         }
         System.out.println(print.toString());
         while (true) {
-            String cardTypeInput = sc.nextLine().trim();
+            String cardTypeInput = readInputWithMenuEscape(sc);
             if (hasMastercard && cardTypeInput.equals("1")) {
                 return CardType.MASTERCARD;
             } else if (hasMastercardPlatinum && cardTypeInput.equals("2")) {
@@ -116,17 +137,14 @@ public class Common {
     }
 
     public static double validDoubleInput(Scanner sc) {
-        Double input = null;
-        while (input == null) {
+        while (true) {
+            String input = readInputWithMenuEscape(sc);
             try {
-                input = sc.nextDouble();
-            } catch (InputMismatchException e) {
+                return Double.parseDouble(input);
+            } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
-                sc.nextLine();
             }
         }
-        sc.nextLine();
-        return input;
     }
 
     public static User getCustomerSelectionInput(Scanner sc) {
@@ -134,7 +152,7 @@ public class Common {
         String toUserID;
         while (toUser == null) {
             printAllCustomerIDAndName(true);
-            toUserID = sc.nextLine();
+            toUserID = readInputWithMenuEscape(sc);
             toUser = UserService.getCustomerById(toUserID);
             if (toUser == null) {
                 System.out.println("Please enter one of the available IDs");

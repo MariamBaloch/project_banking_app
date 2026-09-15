@@ -69,6 +69,10 @@ public class Main {
                     AccountStatementScenario.handle(sc, user);
                     break;
                 case "8":
+                case "profile":
+                    UserProfileScenario.handle(sc, user);
+                    break;
+                case "9":
                 case "logout":
                     user = AuthService.logout(user.getId());
                     break;
