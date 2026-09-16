@@ -5,7 +5,7 @@ money, and view their account balance. The system uses a command-line interface 
 
 ## UML Diagram
 
-![uml.png](uml.png)
+![uml.png](src/main/resources/images/uml.png)
 
 ## Technologies used
 
@@ -22,3 +22,6 @@ money, and view their account balance. The system uses a command-line interface 
 - https://stackoverflow.com/questions/2832472/how-to-return-2-values-from-a-java-method
 - https://www.baeldung.com/a-guide-to-java-enums
 - https://docs.oracle.com/en/java/
+- https://stackoverflow.com/questions/26334556/open-a-file-using-desktopjava-awt
+- https://www.thymeleaf.org/documentation.html
+  https://pdfnoodle.com/blog/generate-pdf-from-html-with-itext-and-java

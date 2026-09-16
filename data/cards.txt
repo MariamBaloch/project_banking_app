@@ -4,4 +4,4 @@ id=7324f424;accountId=ea057c7b;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited
 id=8b868700;accountId=1bccb432;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=852.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=300.0;lastTransactionDate=2026-09-15
 id=3ef4f3dc;accountId=1bccb432;type=Mastercard Platinum;dailyWithdrawn=200.0;dailyDeposited=300.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=0.0;lastTransactionDate=2026-09-15
 
-id=a4c0041e;accountId=77ee0633;type=Mastercard;dailyWithdrawn=1148.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=100.0;lastTransactionDate=2026-09-15
+id=a4c0041e;accountId=77ee0633;type=Mastercard;dailyWithdrawn=0.0;dailyDeposited=0.0;dailyTransferred=0.0;dailyTransferredOwnAccount=0.0;dailyDepositedOwnAccount=700.0;lastTransactionDate=2026-09-16

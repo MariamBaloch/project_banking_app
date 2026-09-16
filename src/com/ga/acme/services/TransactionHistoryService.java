@@ -23,7 +23,6 @@ import static com.ga.acme.util.FileHandler.getDataFromFile;
 public class TransactionHistoryService {
     public static void printUserAccountStatement(String userId, AccountType accountType) {
         User user = UserService.getUserById(userId);
-        HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
         Account account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
 
         System.out.println("=================================================================");
@@ -36,7 +35,19 @@ public class TransactionHistoryService {
         System.out.printf("%s: $%.2f%n", "Total Account Balance", account.getBalance());
         System.out.println("=================================================================");
 
-        Map<String, Map<String, String>> filteredTransactions = transactions.entrySet().stream()
+        Map<String, Map<String, String>> filteredTransactions = getUserAccountTransactions(userId, accountType);
+
+        System.out.println("TRANSACTIONS");
+        System.out.println("-----------------------------------------------------------------");
+        printUserTransactions(filteredTransactions);
+    }
+
+    public static Map<String, Map<String, String>> getUserAccountTransactions(String userId, AccountType accountType) {
+        User user = UserService.getUserById(userId);
+        HashMap<String, Map<String, String>> transactions = getDataFromFile(FilePath.CUSTOMER_TRANSACTIONS.getPath() + user.getId() + "-" + user.getName());
+        Account account = accountType == AccountType.CHECKING_ACCOUNT ? user.getCheckingAccount() : user.getSavingsAccount();
+
+        return transactions.entrySet().stream()
                 .filter(outerEntry -> accountType.getDisplayName().equals(outerEntry.getValue().get("accountType")))
                 .sorted((e1, e2) -> {
                     LocalDateTime date1 = LocalDateTime.parse(e1.getValue().get("transactionDate"));
@@ -49,10 +60,6 @@ public class TransactionHistoryService {
                         (oldValue, newValue) -> oldValue,
                         LinkedHashMap::new
                 ));
-
-        System.out.println("TRANSACTIONS");
-        System.out.println("-----------------------------------------------------------------");
-        printUserTransactions(filteredTransactions);
     }
 
     public static void printFilteredTransactions(String userId, DateFilters dateFilter) {
