@@ -32,7 +32,7 @@ public class Common {
         return input;
     }
 
-    public static void printInitialMenu() {
+    public static void printInitialCustomerMenu() {
         System.out.println("\nPlease select an operation to perform:");
         System.out.println("""
                 1 - Add account
@@ -44,6 +44,17 @@ public class Common {
                 7 - View Account Statement
                 8 - View User Profile
                 9 - Logout
+                
+                Type 'menu' at any prompt to return to the main menu
+                Type 'exit' to shut down system
+                """);
+    }
+
+    public static void printInitialBankerMenu() {
+        System.out.println("\nPlease select an operation to perform:");
+        System.out.println("""
+                1 - View all customers
+                2 - Logout
                 
                 Type 'menu' at any prompt to return to the main menu
                 Type 'exit' to shut down system
@@ -147,11 +158,11 @@ public class Common {
         }
     }
 
-    public static User getCustomerSelectionInput(Scanner sc) {
+    public static User getCustomerSelectionInput(Scanner sc, boolean excludeLoggedIn) {
         User toUser = null;
         String toUserID;
         while (toUser == null) {
-            printAllCustomerIDAndName(true);
+            printAllCustomerIDAndName(excludeLoggedIn);
             toUserID = readInputWithMenuEscape(sc);
             toUser = UserService.getCustomerById(toUserID);
             if (toUser == null) {

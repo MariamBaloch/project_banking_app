@@ -36,7 +36,7 @@ public class TransferScenario {
                 TransactionService.transfer(user.getId(), amount, fromAccountType, cardType, user, toAccountType, false);
             } else {
                 System.out.println("Enter ID of user you would like to transfer to");
-                User toUser = getCustomerSelectionInput(sc);
+                User toUser = getCustomerSelectionInput(sc, true);
                 System.out.println("To which account for " + toUser.getName() + " would you like to transfer to?");
                 AccountType toAccountType = getAccountTypeInput(sc, toUser, false);
                 TransactionService.transfer(user.getId(), amount, fromAccountType, cardType, toUser, toAccountType, false);

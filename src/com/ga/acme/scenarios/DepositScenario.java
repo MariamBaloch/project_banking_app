@@ -34,7 +34,7 @@ public class DepositScenario {
                 TransactionService.deposit(user.getId(), amount, accountType, cardType);
             } else {
                 System.out.println("Enter ID of user you would like to make the deposit to");
-                User toUser = getCustomerSelectionInput(sc);
+                User toUser = getCustomerSelectionInput(sc, true);
                 System.out.println("To which account for " + toUser.getName() + " would you like to deposit to?");
                 AccountType toAccountType = getAccountTypeInput(sc, toUser, false);
                 TransactionService.transfer(user.getId(), amount, accountType, cardType, toUser, toAccountType, true);

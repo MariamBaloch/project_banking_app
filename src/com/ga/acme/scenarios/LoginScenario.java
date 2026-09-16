@@ -19,6 +19,7 @@ public class LoginScenario {
 
         try {
             user = AuthService.login(id, password);
+            userInput = "";
         } catch (AccountLockedException | InvalidPasswordException e) {
             System.out.println(e.getMessage());
             userInput = "login";
