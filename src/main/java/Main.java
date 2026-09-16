@@ -1,6 +1,3 @@
-package com.ga.acme;
-
-
 import com.ga.acme.enums.Roles;
 import com.ga.acme.models.User;
 import com.ga.acme.scenarios.*;
