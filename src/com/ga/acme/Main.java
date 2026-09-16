@@ -98,7 +98,7 @@ public class Main {
                             break;
                         case "9":
                         case "logout":
-                            user = AuthService.logout(user.getId());
+                            user = AuthService.logout(user);
                             break;
                         case "menu":
                             break;
@@ -116,7 +116,7 @@ public class Main {
                             break;
                         case "2":
                         case "logout":
-                            user = AuthService.logout(user.getId());
+                            user = AuthService.logout(user);
                             break;
                         case "menu":
                             break;

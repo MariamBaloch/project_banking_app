@@ -113,8 +113,7 @@ public class AuthService {
 
     }
 
-    public static User logout(String id) {
-        User user = UserService.getUserById(id);
+    public static User logout(User user) {
         user.setIsLoggedIn(false);
         FileHandler.updateLineInFile(FilePath.USERS.getPath(), user.getId(), user.toString());
         System.out.println("Logged out successful");
