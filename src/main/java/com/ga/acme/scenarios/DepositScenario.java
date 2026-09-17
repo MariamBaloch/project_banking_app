@@ -4,6 +4,7 @@ import com.ga.acme.enums.AccountType;
 import com.ga.acme.enums.CardType;
 import com.ga.acme.models.User;
 import com.ga.acme.services.TransactionService;
+import com.ga.acme.services.UserService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -11,7 +12,8 @@ import java.util.Scanner;
 import static com.ga.acme.scenarios.Common.*;
 
 public class DepositScenario {
-    public static void handle(Scanner sc, User user) {
+    public static void handle(Scanner sc, String userid) {
+        User user = UserService.getUserById(userid);
         Common.printHeader("DEPOSIT");
         try {
             System.out.println("Would you like to deposit to your own account or another customer's account?");
@@ -22,7 +24,7 @@ public class DepositScenario {
             Boolean ownAccountDeposit = convertResponseToBoolean(sc, List.of("1", "2"));
 
             System.out.println(ownAccountDeposit ? "Which account would you like to deposit to?" : "Which account would you like to make the deposit from?");
-            AccountType accountType = getAccountTypeInput(sc, user, false);
+            AccountType accountType = getAccountTypeInput(sc, user.getId(), false);
 
             System.out.println("Which card would you like to use for making the deposit?");
             CardType cardType = getCardTypeInput(sc, accountType.equals(AccountType.CHECKING_ACCOUNT) ? user.getCheckingAccount() : user.getSavingsAccount());
@@ -36,7 +38,7 @@ public class DepositScenario {
                 System.out.println("Enter ID of user you would like to make the deposit to");
                 User toUser = getCustomerSelectionInput(sc, true);
                 System.out.println("To which account for " + toUser.getName() + " would you like to deposit to?");
-                AccountType toAccountType = getAccountTypeInput(sc, toUser, false);
+                AccountType toAccountType = getAccountTypeInput(sc, toUser.getId(), false);
                 TransactionService.transfer(user.getId(), amount, accountType, cardType, toUser, toAccountType, true);
             }
         } catch (RuntimeException e) {

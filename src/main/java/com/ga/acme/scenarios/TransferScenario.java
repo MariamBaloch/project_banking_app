@@ -4,6 +4,7 @@ import com.ga.acme.enums.AccountType;
 import com.ga.acme.enums.CardType;
 import com.ga.acme.models.User;
 import com.ga.acme.services.TransactionService;
+import com.ga.acme.services.UserService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -11,8 +12,9 @@ import java.util.Scanner;
 import static com.ga.acme.scenarios.Common.*;
 
 public class TransferScenario {
-    public static void handle(Scanner sc, User user) {
+    public static void handle(Scanner sc, String userid) {
         Common.printHeader("TRANSFER");
+        User user = UserService.getUserById(userid);
         try {
             System.out.println("Would you like to transfer to your own account or another customer's account?");
             System.out.println("""
@@ -22,7 +24,7 @@ public class TransferScenario {
             Boolean ownAccountTransfer = convertResponseToBoolean(sc, List.of("1", "2"));
 
             System.out.println("Which account would you like to transfer from?");
-            AccountType fromAccountType = getAccountTypeInput(sc, user, false);
+            AccountType fromAccountType = getAccountTypeInput(sc, user.getId(), false);
 
             System.out.println("Which card would you like to use for making the transfer?");
             CardType cardType = getCardTypeInput(sc, fromAccountType.equals(AccountType.CHECKING_ACCOUNT) ? user.getCheckingAccount() : user.getSavingsAccount());
@@ -32,13 +34,13 @@ public class TransferScenario {
 
             if (ownAccountTransfer) {
                 System.out.println("To which of your accounts would you like to transfer to?");
-                AccountType toAccountType = getAccountTypeInput(sc, user, false);
+                AccountType toAccountType = getAccountTypeInput(sc, user.getId(), false);
                 TransactionService.transfer(user.getId(), amount, fromAccountType, cardType, user, toAccountType, false);
             } else {
                 System.out.println("Enter ID of user you would like to transfer to");
                 User toUser = getCustomerSelectionInput(sc, true);
                 System.out.println("To which account for " + toUser.getName() + " would you like to transfer to?");
-                AccountType toAccountType = getAccountTypeInput(sc, toUser, false);
+                AccountType toAccountType = getAccountTypeInput(sc, toUser.getId(), false);
                 TransactionService.transfer(user.getId(), amount, fromAccountType, cardType, toUser, toAccountType, false);
             }
         } catch (RuntimeException e) {

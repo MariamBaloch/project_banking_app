@@ -1,6 +1,2 @@
 
-id=0cfdfd91;balance=100.0;userId=1;accountType=Savings Account;mastercardId=null;mastercardPlatinumId=7a6355b2;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false
-id=ea057c7b;balance=790.0;userId=1;accountType=Checking Account;mastercardId=7324f424;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false
-id=1bccb432;balance=370.0;userId=2;accountType=Checking Account;mastercardId=8b868700;mastercardPlatinumId=3ef4f3dc;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false
-
-id=77ee0633;balance=841.0;userId=6;accountType=Checking Account;mastercardId=a4c0041e;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false
+id=01647a03;balance=100.0;userId=2;accountType=Checking Account;mastercardId=da80c0da;mastercardPlatinumId=null;mastercardTitaniumId=null;overdrafts=0;overdraftAmount=0.0;isLocked=false

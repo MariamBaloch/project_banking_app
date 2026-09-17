@@ -67,31 +67,31 @@ public class Main {
                             break;
                         case "2":
                         case "deposit":
-                            DepositScenario.handle(sc, user);
+                            DepositScenario.handle(sc, user.getId());
                             break;
                         case "3":
                         case "withdraw":
-                            WithdrawScenario.handle(sc, user);
+                            WithdrawScenario.handle(sc, user.getId());
                             break;
                         case "4":
                         case "transfer":
-                            TransferScenario.handle(sc, user);
+                            TransferScenario.handle(sc, user.getId());
                             break;
                         case "5":
                         case "resolveoverdraft":
-                            ResolveOverdraftScenario.handle(sc, user);
+                            ResolveOverdraftScenario.handle(sc, user.getId());
                             break;
                         case "6":
                         case "transactionhistory":
-                            TransactionHistoryScenario.handle(sc, user);
+                            TransactionHistoryScenario.handle(sc, user.getId());
                             break;
                         case "7":
                         case "accountstatement":
-                            AccountStatementScenario.handle(sc, user);
+                            AccountStatementScenario.handle(sc, user.getId());
                             break;
                         case "8":
                         case "profile":
-                            UserProfileScenario.handle(sc, user);
+                            UserProfileScenario.handle(sc, user.getId());
                             break;
                         case "9":
                         case "logout":

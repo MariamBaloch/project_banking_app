@@ -4,17 +4,19 @@ import com.ga.acme.enums.AccountType;
 import com.ga.acme.enums.CardType;
 import com.ga.acme.models.User;
 import com.ga.acme.services.TransactionService;
+import com.ga.acme.services.UserService;
 
 import java.util.Scanner;
 
 import static com.ga.acme.scenarios.Common.*;
 
 public class WithdrawScenario {
-    public static void handle(Scanner sc, User user) {
+    public static void handle(Scanner sc, String userid) {
+        User user = UserService.getUserById(userid);
         Common.printHeader("WITHDRAW");
         try {
             System.out.println("Which account would you like to withdraw from?");
-            AccountType accountType = getAccountTypeInput(sc, user, false);
+            AccountType accountType = getAccountTypeInput(sc, user.getId(), false);
             System.out.println("Which card would you like to use for making the withdrawal?");
             CardType cardType = getCardTypeInput(sc, accountType.equals(AccountType.CHECKING_ACCOUNT) ? user.getCheckingAccount() : user.getSavingsAccount());
             System.out.println("Enter the amount you would like to withdraw:");

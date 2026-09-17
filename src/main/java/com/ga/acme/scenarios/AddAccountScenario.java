@@ -15,7 +15,7 @@ public class AddAccountScenario {
         Common.printHeader("ADD ACCOUNT");
         try {
             System.out.println("Which type of account would you like to add?");
-            AccountType accountType = getAccountTypeInput(sc, user, true);
+            AccountType accountType = getAccountTypeInput(sc, user.getId(), true);
 
             List<String> allowedInput = List.of("yes", "no");
 

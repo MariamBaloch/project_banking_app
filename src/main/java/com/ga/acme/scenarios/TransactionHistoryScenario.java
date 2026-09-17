@@ -3,11 +3,13 @@ package com.ga.acme.scenarios;
 import com.ga.acme.enums.DateFilters;
 import com.ga.acme.models.User;
 import com.ga.acme.services.TransactionHistoryService;
+import com.ga.acme.services.UserService;
 
 import java.util.Scanner;
 
 public class TransactionHistoryScenario {
-    public static void handle(Scanner sc, User user) {
+    public static void handle(Scanner sc, String userid) {
+        User user = UserService.getUserById(userid);
         Common.printHeader("TRANSACTION HISTORY");
         try {
             System.out.println("For which period would you like to view your transaction history?");

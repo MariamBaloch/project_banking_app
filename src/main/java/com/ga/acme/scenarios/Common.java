@@ -9,6 +9,7 @@ import com.ga.acme.services.UserService;
 import java.util.List;
 import java.util.Scanner;
 
+import static com.ga.acme.services.UserService.getUserById;
 import static com.ga.acme.services.UserService.printAllCustomerIDAndName;
 
 public class Common {
@@ -74,9 +75,10 @@ public class Common {
         }
     }
 
-    public static AccountType getAccountTypeInput(Scanner sc, User user, Boolean newAccount) {
+    public static AccountType getAccountTypeInput(Scanner sc, String userId, Boolean newAccount) {
         StringBuilder print = new StringBuilder();
         StringBuilder invalidOutput = new StringBuilder("Invalid input. Please enter ");
+        User user = getUserById(userId);
 
         boolean userCheckingAccount = user.getCheckingAccount() != null;
         boolean userSavingAccount = user.getSavingsAccount() != null;
