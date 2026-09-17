@@ -89,11 +89,11 @@ public class Common {
         }
 
         if (userCheckingAccount || newAccount) {
-            print.append("1 - Checking Account");
+            print.append("1 - Checking Account\n");
             invalidOutput.append("1");
         }
         if (userSavingAccount || newAccount) {
-            print.append("\n2 - Saving Account");
+            print.append("2 - Saving Account");
             invalidOutput.append(" or 2.");
         }
         System.out.println(print.toString());

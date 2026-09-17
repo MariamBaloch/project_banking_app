@@ -2,3 +2,5 @@
 id=1;name=mariam;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=null;savingId=null
 id=11;name=BankerGuy;hashedPassword=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855;role=BANKER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=null;savingId=null
 id=2;name=Ali;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=true;checkingId=01647a03;savingId=null
+
+id=3;name=Raghad;hashedPassword=e91c254ad58860a02c788dfb5c1a65d6a8846ab1dc649631c7db16fef4af2dec;role=CUSTOMER;loginAttempts=0;lockedUntil=null;isLoggedIn=false;checkingId=null;savingId=3bbd3a2a
